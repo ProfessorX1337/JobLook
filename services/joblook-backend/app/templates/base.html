@@ -9,7 +9,7 @@
 <body>
   <header class="topnav">
     <a href="/" class="brand">JobLook</a>
-    <nav>
+    <nav class="main-nav">
       {% if user %}
         <a href="/app">Dashboard</a>
         <a href="/app/profile">Profile</a>
@@ -18,8 +18,15 @@
           <button type="submit" class="linklike">Log out</button>
         </form>
       {% else %}
-        <a href="/login">Log in</a>
-        <a href="/signup">Sign up</a>
+        <a href="/product">Product</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/blog">Blog</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+        <div class="auth-links">
+          <a href="/login" class="login-link">Log in</a>
+          <a href="/signup" class="signup-btn">Sign up</a>
+        </div>
       {% endif %}
     </nav>
   </header>

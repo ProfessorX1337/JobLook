@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+{% block title %}Contact — JobLook{% endblock %}
+{% block body %}
+<section class="contact-hero">
+  <div class="container">
+    <h1>Get In Touch</h1>
+    <p class="hero-subtitle">We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+  </div>
+</section>
+
+<section class="contact-options">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-methods">
+        <div class="contact-method">
+          <div class="method-icon">✉️</div>
+          <h3>Email Us</h3>
+          <p>For general inquiries and support</p>
+          <a href="mailto:hello@joblook.app" class="contact-link">hello@joblook.app</a>
+        </div>
+        
+        <div class="contact-method">
+          <div class="method-icon">🎧</div>
+          <h3>Support</h3>
+          <p>Need help? Our support team is here</p>
+          <a href="mailto:support@joblook.app" class="contact-link">support@joblook.app</a>
+        </div>
+        
+        <div class="contact-method">
+          <div class="method-icon">💼</div>
+          <h3>Sales</h3>
+          <p>Interested in enterprise solutions?</p>
+          <a href="mailto:sales@joblook.app" class="contact-link">sales@joblook.app</a>
+        </div>
+        
+        <div class="contact-method">
+          <div class="method-icon">🔒</div>
+          <h3>Security</h3>
+          <p>Report security vulnerabilities</p>
+          <a href="mailto:security@joblook.app" class="contact-link">security@joblook.app</a>
+        </div>
+      </div>
+      
+      <div class="contact-form-section">
+        <div class="contact-form-container">
+          <h3>Send us a message</h3>
+          <form class="contact-form" method="POST" action="/contact">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            
+            <div class="form-group">
+              <label for="name">Name *</label>
+              <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="company">Company</label>
+              <input type="text" id="company" name="company">
+            </div>
+            
+            <div class="form-group">
+              <label for="subject">Subject *</label>
+              <select id="subject" name="subject" required>
+                <option value="">Select a topic...</option>
+                <option value="general">General Inquiry</option>
+                <option value="support">Technical Support</option>
+                <option value="billing">Billing Question</option>
+                <option value="enterprise">Enterprise Sales</option>
+                <option value="partnership">Partnership</option>
+                <option value="press">Press & Media</option>
+                <option value="bug">Bug Report</option>
+                <option value="feature">Feature Request</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="message">Message *</label>
+              <textarea id="message" name="message" rows="5" placeholder="Tell us how we can help you..." required></textarea>
+            </div>
+            
+            <div class="form-group checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" name="newsletter" value="1">
+                <span class="checkmark"></span>
+                I'd like to receive product updates and newsletters
+              </label>
+            </div>
+            
+            <button type="submit" class="cta primary">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faq-contact">
+  <div class="container">
+    <h2>Frequently Asked Questions</h2>
+    <p class="section-subtitle">Common questions we receive</p>
+    
+    <div class="faq-grid">
+      <div class="faq-item">
+        <h3>How quickly do you respond to support requests?</h3>
+        <p>We typically respond to support emails within 24 hours on weekdays. For urgent technical issues, we aim for same-day responses.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h3>Do you offer phone support?</h3>
+        <p>Phone support is available for Professional and Enterprise plan customers. Contact us at <a href="tel:+1-555-123-4567">+1 (555) 123-4567</a> during business hours (9 AM - 6 PM EST).</p>
+      </div>
+      
+      <div class="faq-item">
+        <h3>Can I schedule a demo?</h3>
+        <p>Absolutely! We offer personalized demos for teams and organizations. Use the contact form above or email sales@joblook.app to schedule.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h3>How can I report a bug?</h3>
+        <p>You can report bugs through our contact form, by emailing support@joblook.app, or through the feedback option in the extension.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h3>Do you have an affiliate program?</h3>
+        <p>We're launching our affiliate program soon! Contact us if you're interested in becoming a partner.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h3>Where are you located?</h3>
+        <p>We're a distributed team based primarily in the US and Canada, with team members in San Francisco, New York, and Toronto.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="office-locations">
+  <div class="container">
+    <h2>Our Offices</h2>
+    
+    <div class="locations-grid">
+      <div class="location">
+        <h3>San Francisco HQ</h3>
+        <div class="address">
+          <p>123 Market Street<br>
+          Suite 400<br>
+          San Francisco, CA 94105</p>
+        </div>
+        <p class="location-note">By appointment only</p>
+      </div>
+      
+      <div class="location">
+        <h3>New York</h3>
+        <div class="address">
+          <p>456 Broadway<br>
+          Floor 12<br>
+          New York, NY 10013</p>
+        </div>
+        <p class="location-note">Coworking space</p>
+      </div>
+      
+      <div class="location">
+        <h3>Toronto</h3>
+        <div class="address">
+          <p>789 King Street W<br>
+          Suite 200<br>
+          Toronto, ON M5V 1N1</p>
+        </div>
+        <p class="location-note">Remote hub</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="social-media">
+  <div class="container">
+    <h2>Follow Us</h2>
+    <p>Stay updated with the latest JobLook news and tips</p>
+    
+    <div class="social-links">
+      <a href="https://twitter.com/joblookapp" class="social-link twitter">
+        <span class="social-icon">🐦</span>
+        <span>Twitter</span>
+      </a>
+      <a href="https://linkedin.com/company/joblook" class="social-link linkedin">
+        <span class="social-icon">💼</span>
+        <span>LinkedIn</span>
+      </a>
+      <a href="https://github.com/joblook" class="social-link github">
+        <span class="social-icon">💻</span>
+        <span>GitHub</span>
+      </a>
+      <a href="/blog" class="social-link blog">
+        <span class="social-icon">📝</span>
+        <span>Blog</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+// Auto-populate subject from URL parameter
+const urlParams = new URLSearchParams(window.location.search);
+const subjectParam = urlParams.get('subject');
+if (subjectParam) {
+  const subjectSelect = document.getElementById('subject');
+  if (subjectSelect) {
+    subjectSelect.value = subjectParam;
+  }
+}
+
+// Form submission handling
+document.querySelector('.contact-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  // Basic form validation
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const subject = document.getElementById('subject').value;
+  const message = document.getElementById('message').value.trim();
+  
+  if (!name || !email || !subject || !message) {
+    alert('Please fill in all required fields.');
+    return;
+  }
+  
+  // Submit the form (you'll need to implement the backend handling)
+  const submitBtn = document.querySelector('button[type="submit"]');
+  submitBtn.textContent = 'Sending...';
+  submitBtn.disabled = true;
+  
+  // Simulate form submission (replace with actual submission)
+  setTimeout(() => {
+    alert('Thank you for your message! We\'ll get back to you soon.');
+    this.reset();
+    submitBtn.textContent = 'Send Message';
+    submitBtn.disabled = false;
+  }, 1000);
+});
+</script>
+{% endblock %}

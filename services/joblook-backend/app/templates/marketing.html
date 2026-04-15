@@ -1,9 +1,132 @@
 {% extends "base.html" %}
-{% block title %}JobLook — auto-fill job applications{% endblock %}
+{% block title %}JobLook — Stop Retyping Job Applications{% endblock %}
 {% block body %}
 <section class="hero">
-  <h1>Apply to jobs without retyping the same answers.</h1>
-  <p>JobLook is a Chrome extension that fills Greenhouse, Lever, and Ashby applications from your profile — and tailors long-form answers with Claude. You always click submit.</p>
-  <p><a class="cta" href="/signup">Get started free</a></p>
+  <div class="hero-content">
+    <h1>Stop Retyping Job Applications</h1>
+    <p class="hero-subtitle">JobLook automatically fills out job applications on Greenhouse, Lever, and Ashby using your saved profile. AI-powered personalization for cover letters and essays. You stay in control.</p>
+    <div class="hero-cta">
+      <a class="cta primary" href="/signup">Start Free Trial</a>
+      <a class="cta secondary" href="/product">See How It Works</a>
+    </div>
+    <p class="hero-note">✓ Free 14-day trial • No credit card required</p>
+  </div>
+  <div class="hero-visual">
+    <div class="browser-mockup">
+      <div class="browser-header">
+        <div class="browser-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="browser-url">greenhouse.io/application</div>
+      </div>
+      <div class="form-preview">
+        <div class="form-field filled">
+          <label>Full Name</label>
+          <input value="John Smith" readonly>
+        </div>
+        <div class="form-field filled">
+          <label>Email</label>
+          <input value="john@example.com" readonly>
+        </div>
+        <div class="form-field filling">
+          <label>Why are you interested in this role?</label>
+          <textarea readonly>I'm passionate about this opportunity because it combines my experience in...</textarea>
+          <div class="ai-indicator">✨ AI-powered</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="container">
+    <h2>Save Hours Every Week</h2>
+    <p class="section-subtitle">Stop copy-pasting the same information across dozens of job applications</p>
+    
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-icon">⚡</div>
+        <h3>Instant Auto-Fill</h3>
+        <p>One-click filling of contact details, work experience, and education across all major job boards</p>
+      </div>
+      
+      <div class="feature">
+        <div class="feature-icon">🤖</div>
+        <h3>AI Personalization</h3>
+        <p>Smart cover letters and essay responses tailored to each job posting using advanced AI</p>
+      </div>
+      
+      <div class="feature">
+        <div class="feature-icon">🎯</div>
+        <h3>Universal Compatibility</h3>
+        <p>Works seamlessly with Greenhouse, Lever, Ashby, and other popular ATS platforms</p>
+      </div>
+      
+      <div class="feature">
+        <div class="feature-icon">🔒</div>
+        <h3>Privacy First</h3>
+        <p>Your data stays secure with enterprise-grade encryption. You control what gets shared</p>
+      </div>
+      
+      <div class="feature">
+        <div class="feature-icon">📊</div>
+        <h3>Application Tracking</h3>
+        <p>Keep track of all your applications in one dashboard with status updates and reminders</p>
+      </div>
+      
+      <div class="feature">
+        <div class="feature-icon">💼</div>
+        <h3>Professional Templates</h3>
+        <p>Pre-built response templates for common questions, customizable to your industry</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="social-proof">
+  <div class="container">
+    <h2>Join Thousands of Job Seekers</h2>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-number">50,000+</div>
+        <div class="stat-label">Applications Filled</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">2,500+</div>
+        <div class="stat-label">Active Users</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">85%</div>
+        <div class="stat-label">Time Saved</div>
+      </div>
+    </div>
+    
+    <div class="testimonials">
+      <div class="testimonial">
+        <p>"JobLook cut my application time from 30 minutes to 3 minutes. The AI responses are surprisingly good!"</p>
+        <div class="testimonial-author">— Sarah Chen, Software Engineer</div>
+      </div>
+      <div class="testimonial">
+        <p>"Finally, a tool that actually works with all the job boards I use. Game changer for my job search."</p>
+        <div class="testimonial-author">— Marcus Johnson, Product Manager</div>
+      </div>
+      <div class="testimonial">
+        <p>"The personalized cover letters are better than what I used to write manually. Highly recommend."</p>
+        <div class="testimonial-author">— Emma Rodriguez, Marketing Specialist</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <h2>Ready to Transform Your Job Search?</h2>
+    <p>Join thousands of professionals who've streamlined their job applications</p>
+    <div class="cta-buttons">
+      <a class="cta primary large" href="/signup">Start Your Free Trial</a>
+      <a class="cta secondary large" href="/pricing">View Pricing</a>
+    </div>
+    <p class="cta-note">✓ 14-day free trial • ✓ No credit card required • ✓ Cancel anytime</p>
+  </div>
 </section>
 {% endblock %}

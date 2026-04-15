@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% block title %}Pricing — JobLook{% endblock %}
+{% block body %}
+<section class="pricing-hero">
+  <div class="container">
+    <h1>Simple, Transparent Pricing</h1>
+    <p class="hero-subtitle">Choose the plan that fits your job search needs</p>
+    <div class="billing-toggle">
+      <span>Monthly</span>
+      <label class="toggle">
+        <input type="checkbox" id="billing-toggle">
+        <span class="slider"></span>
+      </label>
+      <span>Annual <span class="discount-badge">Save 20%</span></span>
+    </div>
+  </div>
+</section>
+
+<section class="pricing-plans">
+  <div class="container">
+    <div class="plans-grid">
+      <div class="plan free">
+        <div class="plan-header">
+          <h3>Free Trial</h3>
+          <div class="price">
+            <span class="amount">$0</span>
+            <span class="period">/14 days</span>
+          </div>
+          <p class="plan-description">Perfect for testing JobLook</p>
+        </div>
+        
+        <div class="plan-features">
+          <ul>
+            <li>✓ 10 application fills</li>
+            <li>✓ Basic auto-fill</li>
+            <li>✓ AI cover letters</li>
+            <li>✓ All major ATS platforms</li>
+            <li>✓ Email support</li>
+          </ul>
+        </div>
+        
+        <div class="plan-cta">
+          <a href="/signup" class="cta secondary">Start Free Trial</a>
+        </div>
+      </div>
+
+      <div class="plan starter recommended">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-header">
+          <h3>Starter</h3>
+          <div class="price">
+            <span class="amount monthly-price">$19</span>
+            <span class="amount annual-price" style="display: none;">$15</span>
+            <span class="period">/month</span>
+          </div>
+          <p class="plan-description">For active job seekers</p>
+        </div>
+        
+        <div class="plan-features">
+          <ul>
+            <li>✓ Unlimited applications</li>
+            <li>✓ Advanced auto-fill</li>
+            <li>✓ AI personalization</li>
+            <li>✓ Application tracking</li>
+            <li>✓ Response templates</li>
+            <li>✓ Priority email support</li>
+            <li>✓ Data export</li>
+          </ul>
+        </div>
+        
+        <div class="plan-cta">
+          <a href="/signup?plan=starter" class="cta primary">Choose Starter</a>
+        </div>
+      </div>
+
+      <div class="plan professional">
+        <div class="plan-header">
+          <h3>Professional</h3>
+          <div class="price">
+            <span class="amount monthly-price">$39</span>
+            <span class="amount annual-price" style="display: none;">$31</span>
+            <span class="period">/month</span>
+          </div>
+          <p class="plan-description">For serious professionals</p>
+        </div>
+        
+        <div class="plan-features">
+          <ul>
+            <li>✓ Everything in Starter</li>
+            <li>✓ Custom response templates</li>
+            <li>✓ Advanced AI settings</li>
+            <li>✓ Interview preparation</li>
+            <li>✓ Salary negotiation tools</li>
+            <li>✓ LinkedIn integration</li>
+            <li>✓ Phone support</li>
+            <li>✓ Chrome + Firefox support</li>
+          </ul>
+        </div>
+        
+        <div class="plan-cta">
+          <a href="/signup?plan=professional" class="cta secondary">Choose Professional</a>
+        </div>
+      </div>
+
+      <div class="plan enterprise">
+        <div class="plan-header">
+          <h3>Enterprise</h3>
+          <div class="price">
+            <span class="amount">Custom</span>
+          </div>
+          <p class="plan-description">For teams and organizations</p>
+        </div>
+        
+        <div class="plan-features">
+          <ul>
+            <li>✓ Everything in Professional</li>
+            <li>✓ Team management</li>
+            <li>✓ Bulk license discounts</li>
+            <li>✓ Custom integrations</li>
+            <li>✓ SSO authentication</li>
+            <li>✓ Advanced analytics</li>
+            <li>✓ Dedicated support</li>
+            <li>✓ Custom deployment</li>
+          </ul>
+        </div>
+        
+        <div class="plan-cta">
+          <a href="/contact?subject=enterprise" class="cta secondary">Contact Sales</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing-faq">
+  <div class="container">
+    <h2>Frequently Asked Questions</h2>
+    
+    <div class="faq-grid">
+      <div class="faq-item">
+        <h3>How does the free trial work?</h3>
+        <p>Start with a 14-day free trial that includes 10 application fills and all core features. No credit card required to start.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h3>Can I change plans anytime?</h3>
+        <p>Yes! You can upgrade, downgrade, or cancel your subscription at any time. Changes take effect at your next billing cycle.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h3>What platforms do you support?</h3>
+        <p>We support Greenhouse, Lever, Ashby, BambooHR, Workday, and many other popular ATS platforms. New platforms are added regularly.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h3>Is my data secure?</h3>
+        <p>Absolutely. We use enterprise-grade encryption and never sell your data. You maintain full control over your information.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h3>Do you offer refunds?</h3>
+        <p>Yes, we offer a 30-day money-back guarantee if you're not satisfied with JobLook.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h3>How accurate is the AI writing?</h3>
+        <p>Our AI generates high-quality, personalized responses based on job descriptions and your profile. You always review before submitting.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing-guarantee">
+  <div class="container">
+    <div class="guarantee-card">
+      <h2>30-Day Money-Back Guarantee</h2>
+      <p>Not satisfied? Get a full refund within 30 days, no questions asked.</p>
+      <div class="guarantee-features">
+        <div class="guarantee-feature">
+          <span class="icon">✓</span>
+          <span>14-day free trial</span>
+        </div>
+        <div class="guarantee-feature">
+          <span class="icon">✓</span>
+          <span>No setup fees</span>
+        </div>
+        <div class="guarantee-feature">
+          <span class="icon">✓</span>
+          <span>Cancel anytime</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <h2>Start Saving Time Today</h2>
+    <p>Join thousands of professionals who've streamlined their job search</p>
+    <div class="cta-buttons">
+      <a class="cta primary large" href="/signup">Start Free Trial</a>
+      <a class="cta secondary large" href="/contact">Contact Sales</a>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById('billing-toggle').addEventListener('change', function() {
+  const monthlyPrices = document.querySelectorAll('.monthly-price');
+  const annualPrices = document.querySelectorAll('.annual-price');
+  
+  if (this.checked) {
+    monthlyPrices.forEach(price => price.style.display = 'none');
+    annualPrices.forEach(price => price.style.display = 'inline');
+  } else {
+    monthlyPrices.forEach(price => price.style.display = 'inline');
+    annualPrices.forEach(price => price.style.display = 'none');
+  }
+});
+</script>
+{% endblock %}

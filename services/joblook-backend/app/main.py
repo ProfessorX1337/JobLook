@@ -10,6 +10,7 @@ from fastapi.templating import Jinja2Templates
 from .auth import CSRF_COOKIE, issue_csrf_token, optional_current_user, set_csrf_cookie
 from .models import User
 from .routes import auth as auth_routes
+from .routes import blog as blog_routes
 from .routes import dashboard as dashboard_routes
 from .routes import extension as extension_routes
 
@@ -27,6 +28,7 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
 app.include_router(auth_routes.router)
+app.include_router(blog_routes.router)
 app.include_router(dashboard_routes.router)
 app.include_router(extension_routes.router)
 
@@ -48,6 +50,45 @@ def landing(request: Request, user: User | None = Depends(optional_current_user)
         request, "marketing.html",
         {"user": None, "csrf_token": request.cookies.get(CSRF_COOKIE, "")},
     )
+
+
+@app.get("/product", response_class=HTMLResponse)
+def product_page(request: Request):
+    return templates.TemplateResponse(
+        request, "product.html",
+        {"csrf_token": request.cookies.get(CSRF_COOKIE, "")},
+    )
+
+
+@app.get("/pricing", response_class=HTMLResponse)
+def pricing_page(request: Request):
+    return templates.TemplateResponse(
+        request, "pricing.html",
+        {"csrf_token": request.cookies.get(CSRF_COOKIE, "")},
+    )
+
+
+@app.get("/about", response_class=HTMLResponse)
+def about_page(request: Request):
+    return templates.TemplateResponse(
+        request, "about.html",
+        {"csrf_token": request.cookies.get(CSRF_COOKIE, "")},
+    )
+
+
+@app.get("/contact", response_class=HTMLResponse)
+def contact_page(request: Request):
+    return templates.TemplateResponse(
+        request, "contact.html",
+        {"csrf_token": request.cookies.get(CSRF_COOKIE, "")},
+    )
+
+
+@app.post("/contact", response_class=HTMLResponse)
+def contact_form_submit(request: Request):
+    # This would handle the contact form submission
+    # For now, just redirect back to contact page with a success message
+    return RedirectResponse("/contact?success=1", status_code=303)
 
 
 @app.get("/healthz")

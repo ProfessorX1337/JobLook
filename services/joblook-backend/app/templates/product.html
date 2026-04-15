@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block title %}Product — JobLook{% endblock %}
+{% block body %}
+<section class="product-hero">
+  <div class="container">
+    <h1>How JobLook Works</h1>
+    <p class="hero-subtitle">See how our Chrome extension transforms your job application process</p>
+  </div>
+</section>
+
+<section class="product-demo">
+  <div class="container">
+    <div class="demo-steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3>Install & Setup</h3>
+          <p>Add JobLook to Chrome and complete your profile once. Include your work history, education, skills, and sample responses.</p>
+          <div class="demo-visual">
+            <div class="setup-card">
+              <h4>Your Profile</h4>
+              <div class="profile-fields">
+                <div class="field">✓ Contact Information</div>
+                <div class="field">✓ Work Experience</div>
+                <div class="field">✓ Education</div>
+                <div class="field">✓ Skills & Certifications</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3>Navigate to Any Job Application</h3>
+          <p>Visit job applications on Greenhouse, Lever, Ashby, or other supported platforms. JobLook automatically detects application forms.</p>
+          <div class="demo-visual">
+            <div class="supported-platforms">
+              <div class="platform">Greenhouse</div>
+              <div class="platform">Lever</div>
+              <div class="platform">Ashby</div>
+              <div class="platform">BambooHR</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3>One-Click Auto-Fill</h3>
+          <p>Click the JobLook icon to instantly fill all standard fields. For essays and cover letters, our AI generates personalized responses based on the job description.</p>
+          <div class="demo-visual">
+            <div class="extension-popup">
+              <div class="popup-header">JobLook</div>
+              <button class="fill-button">Fill Application</button>
+              <div class="ai-options">
+                <label><input type="checkbox" checked> Generate cover letter</label>
+                <label><input type="checkbox" checked> Personalize responses</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h3>Review & Submit</h3>
+          <p>Always review the filled information and AI-generated content. Make any edits needed, then submit your application with confidence.</p>
+          <div class="demo-visual">
+            <div class="review-panel">
+              <div class="review-item">✓ Contact info filled</div>
+              <div class="review-item">✓ Experience populated</div>
+              <div class="review-item">⚡ AI cover letter generated</div>
+              <div class="submit-button">Ready to Submit</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="features-detail">
+  <div class="container">
+    <h2>Powerful Features for Job Seekers</h2>
+    
+    <div class="feature-sections">
+      <div class="feature-section">
+        <div class="feature-content">
+          <h3>Smart Form Detection</h3>
+          <p>Our advanced algorithms identify and map form fields across different ATS platforms, ensuring accurate data placement every time.</p>
+          <ul>
+            <li>Automatic field recognition</li>
+            <li>Multi-format support</li>
+            <li>Custom field mapping</li>
+            <li>Error detection & correction</li>
+          </ul>
+        </div>
+        <div class="feature-visual">
+          <div class="form-detection-demo">
+            <div class="detected-field">Name Field → John Smith</div>
+            <div class="detected-field">Email Field → john@email.com</div>
+            <div class="detected-field">Phone Field → (555) 123-4567</div>
+            <div class="ai-generated">Essay Field → AI Generated ✨</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-section reverse">
+        <div class="feature-content">
+          <h3>AI-Powered Personalization</h3>
+          <p>Generate compelling cover letters and essay responses tailored to each job posting using advanced natural language processing.</p>
+          <ul>
+            <li>Job description analysis</li>
+            <li>Tone matching</li>
+            <li>Keyword optimization</li>
+            <li>Multiple response variations</li>
+          </ul>
+        </div>
+        <div class="feature-visual">
+          <div class="ai-demo">
+            <div class="job-posting">
+              "Seeking experienced developer with React expertise..."
+            </div>
+            <div class="arrow">↓</div>
+            <div class="ai-response">
+              "My 5 years of React development experience aligns perfectly with..."
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-section">
+        <div class="feature-content">
+          <h3>Application Tracking</h3>
+          <p>Keep track of all your applications in one centralized dashboard with status updates, follow-up reminders, and interview scheduling.</p>
+          <ul>
+            <li>Application timeline</li>
+            <li>Status notifications</li>
+            <li>Follow-up reminders</li>
+            <li>Interview preparation</li>
+          </ul>
+        </div>
+        <div class="feature-visual">
+          <div class="dashboard-preview">
+            <div class="app-item">TechCorp - Applied 3 days ago</div>
+            <div class="app-item">StartupXYZ - Interview scheduled</div>
+            <div class="app-item">BigCo - Follow up needed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="security-privacy">
+  <div class="container">
+    <h2>Your Privacy & Security Matter</h2>
+    <p>We take data protection seriously with enterprise-grade security measures</p>
+    
+    <div class="security-features">
+      <div class="security-feature">
+        <div class="security-icon">🔐</div>
+        <h3>End-to-End Encryption</h3>
+        <p>All data is encrypted in transit and at rest using AES-256 encryption</p>
+      </div>
+      
+      <div class="security-feature">
+        <div class="security-icon">🏠</div>
+        <h3>Local Data Storage</h3>
+        <p>Sensitive information stays on your device whenever possible</p>
+      </div>
+      
+      <div class="security-feature">
+        <div class="security-icon">🚫</div>
+        <h3>No Data Selling</h3>
+        <p>We never sell or share your personal information with third parties</p>
+      </div>
+      
+      <div class="security-feature">
+        <div class="security-icon">⚙️</div>
+        <h3>Full Control</h3>
+        <p>You decide what information to include and can delete your data anytime</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <h2>Ready to Streamline Your Job Search?</h2>
+    <p>Join thousands of professionals who save hours every week</p>
+    <div class="cta-buttons">
+      <a class="cta primary large" href="/signup">Start Free Trial</a>
+      <a class="cta secondary large" href="/pricing">View Pricing</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
