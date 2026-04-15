@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · JobLook{% endblock %}
+{% block body %}
+<section class="dash">
+  <h1>Welcome, {{ profile.identity.first_name or user.email }}</h1>
+  <p>Tier: <strong>{{ user.tier }}</strong></p>
+  <ul class="actions">
+    <li><a href="/app/resume">Upload or replace resume</a></li>
+    <li><a href="/app/profile">Edit profile</a></li>
+    <li><a href="/app/connect-extension">Connect Chrome extension</a></li>
+  </ul>
+</section>
+{% endblock %}

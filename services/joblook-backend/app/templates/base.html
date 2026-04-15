@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}JobLook{% endblock %}</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topnav">
+    <a href="/" class="brand">JobLook</a>
+    <nav>
+      {% if user %}
+        <a href="/app">Dashboard</a>
+        <a href="/app/profile">Profile</a>
+        <form method="post" action="/logout" style="display:inline">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token or '' }}">
+          <button type="submit" class="linklike">Log out</button>
+        </form>
+      {% else %}
+        <a href="/login">Log in</a>
+        <a href="/signup">Sign up</a>
+      {% endif %}
+    </nav>
+  </header>
+  <main>{% block body %}{% endblock %}</main>
+</body>
+</html>

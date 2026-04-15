@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Profile · JobLook{% endblock %}
+{% block body %}
+<section class="dash">
+  <h1>Your profile</h1>
+  <p>Edit the JSON below directly. v2 will replace this with structured forms per section.</p>
+  <form method="post" action="/app/profile">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <textarea name="profile_json" rows="32" cols="100" spellcheck="false">{{ profile_json }}</textarea>
+    <div class="row">
+      <button type="submit">Save profile</button>
+      <a href="/app/resume">Re-import from resume</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>JobLook</title>
+  <style>
+    body { font: 13px -apple-system, sans-serif; width: 280px; padding: 12px; margin: 0; }
+    h1 { font-size: 15px; margin: 0 0 10px; }
+    button { width: 100%; padding: 8px; margin-top: 6px; border: 0; border-radius: 4px; cursor: pointer; background: #2b6cb0; color: #fff; }
+    button.secondary { background: #eee; color: #111; }
+    .status { color: #666; margin: 8px 0; min-height: 1.4em; }
+    .row { display: flex; justify-content: space-between; align-items: center; }
+    a { color: #2b6cb0; }
+  </style>
+</head>
+<body>
+  <h1>JobLook</h1>
+  <div id="auth" class="row"></div>
+  <div id="detect" class="status"></div>
+  <button id="fill-btn">Fill standard fields</button>
+  <div id="result" class="status" aria-live="polite"></div>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

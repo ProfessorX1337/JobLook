@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Upload resume · JobLook{% endblock %}
+{% block body %}
+<section class="dash">
+  <h1>Upload your resume</h1>
+  <p>PDF, DOCX, or plain text. Up to 5 MB. We extract structured fields with Claude — you'll review before saving.</p>
+  <form method="post" action="/app/resume" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <input type="file" name="resume" accept=".pdf,.docx,.txt" required>
+    <button type="submit">Parse resume</button>
+  </form>
+</section>
+{% endblock %}

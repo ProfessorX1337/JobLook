@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Review parsed resume · JobLook{% endblock %}
+{% block body %}
+<section class="dash">
+  <h1>Review parsed profile</h1>
+  <p>Claude extracted the following from your resume (cost: {{ "%.2f"|format(cost_cents / 100) }}¢). Edit anything that's wrong, then save.</p>
+  <form method="post" action="/app/resume/confirm">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <textarea name="profile_json" rows="32" cols="100" spellcheck="false">{{ profile_json }}</textarea>
+    <div class="row">
+      <button type="submit">Save profile</button>
+      <a href="/app/resume">Try a different file</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

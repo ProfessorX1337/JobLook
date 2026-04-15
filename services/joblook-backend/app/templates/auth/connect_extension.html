@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Connect extension · JobLook{% endblock %}
+{% block body %}
+<section class="auth-card">
+  <h1>Connect the JobLook extension</h1>
+  <p>Paste your extension ID, then click Connect. You only have to do this once per browser.</p>
+  <label>Extension ID
+    <input id="ext-id" placeholder="e.g. abcdefghijklmnop..." autocomplete="off">
+  </label>
+  <button id="connect-btn" type="button">Connect</button>
+  <p id="status" aria-live="polite"></p>
+</section>
+<script>
+  const TOKEN = {{ jwt | tojson }};
+  const $id = document.getElementById("ext-id");
+  const $status = document.getElementById("status");
+
+  // Remember last used ID locally.
+  const saved = localStorage.getItem("joblook_ext_id");
+  if (saved) $id.value = saved;
+
+  document.getElementById("connect-btn").addEventListener("click", () => {
+    const extId = $id.value.trim();
+    if (!extId) { $status.textContent = "Enter your extension ID first."; return; }
+    localStorage.setItem("joblook_ext_id", extId);
+    if (typeof chrome === "undefined" || !chrome.runtime || !chrome.runtime.sendMessage) {
+      $status.textContent = "This browser can't message extensions. Use Chrome.";
+      return;
+    }
+    chrome.runtime.sendMessage(
+      extId,
+      { type: "joblook:connect", token: TOKEN },
+      (resp) => {
+        if (chrome.runtime.lastError) {
+          $status.textContent = "Error: " + chrome.runtime.lastError.message;
+          return;
+        }
+        $status.textContent = resp?.ok
+          ? "Connected. Open the extension popup to start filling applications."
+          : "Failed: " + (resp?.error || "unknown");
+      }
+    );
+  });
+</script>
+{% endblock %}
