@@ -1,133 +1,133 @@
 {% extends "base.html" %}
-{% block title %}Pricing — JobLook{% endblock %}
+{% block title %}Joblook Premium — JobLook{% endblock %}
 {% block body %}
 <section class="pricing-hero">
   <div class="container">
-    <h1>Simple, Transparent Pricing</h1>
-    <p class="hero-subtitle">Choose the plan that fits your job search needs</p>
-    <div class="billing-toggle">
-      <span>Monthly</span>
-      <label class="toggle">
-        <input type="checkbox" id="billing-toggle">
-        <span class="slider"></span>
-      </label>
-      <span>Annual <span class="discount-badge">Save 20%</span></span>
+    <h1>Joblook Premium</h1>
+    <p class="hero-subtitle">Turn your job search into a competitive advantage.</p>
+    <p class="pricing-intro">Free tools get you started. Premium turns Joblook into your full-time career co-pilot — giving you unlimited AI power, deeper intelligence, and advanced automation that actually move the needle.</p>
+  </div>
+</section>
+
+<section class="premium-features">
+  <div class="container">
+    <h2>Here's what you unlock when you upgrade:</h2>
+    
+    <div class="feature-category">
+      <div class="category-header">
+        <h3>1. AI-Powered Career Acceleration</h3>
+        <p>Get expert-level coaching without the coach.</p>
+      </div>
+      
+      <div class="premium-feature">
+        <h4>AI Interview Coach</h4>
+        <p>Unlimited mock interviews tailored to the exact job you're targeting. Practice in text or video, receive instant feedback on STAR responses, clarity, confidence, and body language. Get follow-up questions, improvement scripts, and performance scoring so you walk into every interview prepared and polished.</p>
+      </div>
+      
+      <div class="premium-feature">
+        <h4>Salary Negotiation Simulator</h4>
+        <p>Know exactly what to say — and what you're worth. The AI builds personalized negotiation scripts, counter-offer ranges based on real market data and your profile, and role-plays the entire conversation. Includes ready-to-send email templates that have helped users average +12% higher offers.</p>
+      </div>
+    </div>
+    
+    <div class="feature-category">
+      <div class="category-header">
+        <h3>2. Advanced Insights & Analytics</h3>
+        <p>Stop guessing. Start winning.</p>
+      </div>
+      
+      <div class="premium-feature">
+        <h4>Application Performance Predictor + A/B Testing</h4>
+        <p>See your predicted interview rate before you hit "submit." The AI scores every application, recommends 2–3 optimized resume versions, and tracks real results over time. Watch your conversion rates climb with data-driven insights free users never see.</p>
+      </div>
+      
+      <div class="premium-feature">
+        <h4>Company Intelligence Reports</h4>
+        <p>One-click deep dives on any employer: culture signals, recent news, funding updates, employee sentiment, and hidden red/green flags. Make every application informed instead of blind.</p>
+      </div>
+    </div>
+    
+    <div class="feature-category">
+      <div class="category-header">
+        <h3>3. Enhanced Automation & Efficiency</h3>
+        <p>Apply smarter, faster, and in higher volume — without losing control.</p>
+      </div>
+      
+      <div class="premium-feature">
+        <h4>Smart Autofill + Intelligent Auto-Apply</h4>
+        <p>Remove the daily limits and let AI intelligently tailor key sections of your application before submission. Built-in quality gates and deduplication ensure you never sacrifice quality for quantity.</p>
+      </div>
+      
+      <div class="premium-feature">
+        <h4>Advanced Pipeline Analytics & Export</h4>
+        <p>Custom dashboards, "at-risk" alerts, automated follow-up reminders, and one-click exports to CSV or PDF. Treat your job search like the high-stakes project it is.</p>
+      </div>
+    </div>
+    
+    <div class="feature-category">
+      <div class="category-header">
+        <h3>4. Networking & Personal Branding</h3>
+        <p>Stand out before you even apply.</p>
+      </div>
+      
+      <div class="premium-feature">
+        <h4>LinkedIn & Profile Optimizer</h4>
+        <p>AI rewrites your headline, summary, and experience bullets for maximum recruiter visibility. Generate personalized connection messages and follow-ups that actually get replies.</p>
+      </div>
+      
+      <div class="premium-feature">
+        <h4>Personal Branding Toolkit</h4>
+        <p>Instantly create executive summaries, portfolio pages, or "About Me" narratives ready for your personal site or LinkedIn. Perfect for creatives, executives, and career switchers who want to showcase their unique value.</p>
+      </div>
+    </div>
+    
+    <div class="feature-category">
+      <div class="category-header">
+        <h3>5. Exclusive Perks & Support</h3>
+        <p>Because serious job seekers deserve serious support.</p>
+      </div>
+      
+      <div class="premium-feature">
+        <h4>Priority Support & More</h4>
+        <ul>
+          <li>Priority customer support</li>
+          <li>Optional monthly human resume reviews (available as add-on)</li>
+          <li>Completely ad-free experience</li>
+          <li>Early access to every new AI feature we release</li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="pricing-plans">
+<section class="pricing-cta">
   <div class="container">
-    <div class="plans-grid">
-      <div class="plan free">
-        <div class="plan-header">
-          <h3>Free Trial</h3>
-          <div class="price">
-            <span class="amount">$0</span>
-            <span class="period">/14 days</span>
-          </div>
-          <p class="plan-description">Perfect for testing JobLook</p>
+    <div class="pricing-card">
+      <h2>Ready to make your next job search your last one?</h2>
+      <p>Upgrade to Joblook Premium today and get:</p>
+      
+      <div class="pricing-highlights">
+        <div class="highlight">✓ Unlimited everything listed above</div>
+        <div class="highlight">✓ Flexible monthly or annual billing (annual saves you ~25%)</div>
+        <div class="highlight">✓ Cancel anytime — no contracts</div>
+      </div>
+      
+      <div class="pricing-options">
+        <div class="price-option">
+          <div class="price-amount">$19/month</div>
+          <div class="price-billing">billed monthly</div>
+          <a href="/signup?plan=monthly" class="cta primary">Start Monthly Plan</a>
         </div>
         
-        <div class="plan-features">
-          <ul>
-            <li>✓ 10 application fills</li>
-            <li>✓ Basic auto-fill</li>
-            <li>✓ AI cover letters</li>
-            <li>✓ All major ATS platforms</li>
-            <li>✓ Email support</li>
-          </ul>
-        </div>
-        
-        <div class="plan-cta">
-          <a href="/signup" class="cta secondary">Start Free Trial</a>
+        <div class="price-option recommended">
+          <div class="price-badge">Save 25%</div>
+          <div class="price-amount">$149/year</div>
+          <div class="price-billing">($12.40/month)</div>
+          <a href="/signup?plan=annual" class="cta primary">Start Annual Plan</a>
         </div>
       </div>
-
-      <div class="plan starter recommended">
-        <div class="plan-badge">Most Popular</div>
-        <div class="plan-header">
-          <h3>Starter</h3>
-          <div class="price">
-            <span class="amount monthly-price">$19</span>
-            <span class="amount annual-price" style="display: none;">$15</span>
-            <span class="period">/month</span>
-          </div>
-          <p class="plan-description">For active job seekers</p>
-        </div>
-        
-        <div class="plan-features">
-          <ul>
-            <li>✓ Unlimited applications</li>
-            <li>✓ Advanced auto-fill</li>
-            <li>✓ AI personalization</li>
-            <li>✓ Application tracking</li>
-            <li>✓ Response templates</li>
-            <li>✓ Priority email support</li>
-            <li>✓ Data export</li>
-          </ul>
-        </div>
-        
-        <div class="plan-cta">
-          <a href="/signup?plan=starter" class="cta primary">Choose Starter</a>
-        </div>
-      </div>
-
-      <div class="plan professional">
-        <div class="plan-header">
-          <h3>Professional</h3>
-          <div class="price">
-            <span class="amount monthly-price">$39</span>
-            <span class="amount annual-price" style="display: none;">$31</span>
-            <span class="period">/month</span>
-          </div>
-          <p class="plan-description">For serious professionals</p>
-        </div>
-        
-        <div class="plan-features">
-          <ul>
-            <li>✓ Everything in Starter</li>
-            <li>✓ Custom response templates</li>
-            <li>✓ Advanced AI settings</li>
-            <li>✓ Interview preparation</li>
-            <li>✓ Salary negotiation tools</li>
-            <li>✓ LinkedIn integration</li>
-            <li>✓ Phone support</li>
-            <li>✓ Chrome + Firefox support</li>
-          </ul>
-        </div>
-        
-        <div class="plan-cta">
-          <a href="/signup?plan=professional" class="cta secondary">Choose Professional</a>
-        </div>
-      </div>
-
-      <div class="plan enterprise">
-        <div class="plan-header">
-          <h3>Enterprise</h3>
-          <div class="price">
-            <span class="amount">Custom</span>
-          </div>
-          <p class="plan-description">For teams and organizations</p>
-        </div>
-        
-        <div class="plan-features">
-          <ul>
-            <li>✓ Everything in Professional</li>
-            <li>✓ Team management</li>
-            <li>✓ Bulk license discounts</li>
-            <li>✓ Custom integrations</li>
-            <li>✓ SSO authentication</li>
-            <li>✓ Advanced analytics</li>
-            <li>✓ Dedicated support</li>
-            <li>✓ Custom deployment</li>
-          </ul>
-        </div>
-        
-        <div class="plan-cta">
-          <a href="/contact?subject=enterprise" class="cta secondary">Contact Sales</a>
-        </div>
-      </div>
+      
+      <p class="money-back">Most users see results in their first 30 days.<br>Don't let the next great opportunity slip by because you hit a free-tier limit.</p>
     </div>
   </div>
 </section>
