@@ -1,8 +1,33 @@
 # Project Status
 
-**Snapshot date:** 2026-04-15
-**Current milestone:** M2 — feature-complete in code; awaiting live-site smoke test.
+**Snapshot date:** 2026-04-15  
+**Current phase:** Marketing Website & Premium Definition Complete
+**Next milestone:** M3 — Premium Feature Implementation
 **Authoritative checklist:** [PRD.md §9](PRD.md) (update checkboxes there as work lands).
+
+---
+
+## Latest Major Update: Website Transformation (April 15, 2026)
+
+### ✅ Marketing Website Redesign Complete
+- **New Positioning:** "Your AI-Powered Career Advantage"
+- **Homepage:** Complete redesign with premium teaser and core capabilities
+- **Pricing Page:** Full premium feature breakdown with $19/month pricing
+- **Premium Strategy:** Freemium model with clear upgrade path
+- **Demo Server:** `demo_main.py` for easy local testing
+
+### ✅ Premium Tier Definition
+**Five Feature Categories Defined:**
+1. AI-Powered Career Acceleration (Interview Coach, Salary Negotiation)
+2. Advanced Insights & Analytics (Performance Prediction, A/B Testing)
+3. Enhanced Automation & Efficiency (Smart Autofill, Pipeline Analytics)
+4. Networking & Personal Branding (LinkedIn Optimizer, Branding Toolkit)
+5. Exclusive Perks & Support (Priority Support, Ad-free Experience)
+
+**Pricing Structure:**
+- **Monthly:** $19/month
+- **Annual:** $149/year (25% savings)
+- **Target:** Serious job seekers willing to invest in career advantage
 
 ---
 
@@ -27,8 +52,10 @@ Backend `/autofill` heuristic → LLM tailoring → Lever + Ashby → Stripe + t
 
 | Component | State |
 |---|---|
+| **Marketing Site** | **✅ Complete redesign with new positioning and premium features** |
+| **Demo Server** | **`python3 -m uvicorn demo_main:app --reload --host 0.0.0.0 --port 8000` — serves all marketing pages** |
 | Postgres | `postgresql@16` via Homebrew, running as a service (`brew services`). Role `joblook` / db `joblook` / all 8 tables present. |
-| Python | 3.12 via Homebrew. venv at `services/joblook-backend/.venv`. All deps installed, including `pydantic[email]`. |
+| Python | 3.12+ dependencies installed globally. FastAPI, uvicorn, jinja2, markdown installed. |
 | `.env` | Generated with fresh `SESSION_SECRET`, `EXTENSION_JWT_SECRET`, `PROFILE_ENCRYPTION_MASTER_KEY`. **`ANTHROPIC_API_KEY` still blank** — must be filled before resume parsing works. |
 | Migrations | `alembic upgrade head` applied. |
 | Backend | `uvicorn app.main:app --host 127.0.0.1 --port 8000` — served `/`, `/signup`, `/login`, `/healthz` at 200 OK on the last check. |
@@ -36,6 +63,11 @@ Backend `/autofill` heuristic → LLM tailoring → Lever + Ashby → Stripe + t
 
 Run commands:
 ```bash
+# For marketing website demo
+cd services/joblook-backend
+python3 -m uvicorn demo_main:app --reload --host 0.0.0.0 --port 8000
+
+# For full backend (when ready)
 cd services/joblook-backend
 source .venv/bin/activate
 uvicorn app.main:app --reload

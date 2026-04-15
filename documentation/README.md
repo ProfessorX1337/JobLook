@@ -1,6 +1,15 @@
 # JobLook Documentation
 
-JobLook is a Chrome extension + FastAPI backend that auto-fills job applications on Greenhouse, Lever, and Ashby (v1). Standard fields fill locally; custom long-form questions are tailored by Claude on the backend.
+**JobLook: Your AI-Powered Career Advantage**
+
+JobLook is an intelligent job search platform that combines AI-driven matching, automation, and organization into one seamless experience. It transforms the chaotic, time-consuming job hunt into a structured, efficient process through a Chrome extension + FastAPI backend architecture.
+
+## Product Evolution
+
+**Current Positioning (April 2026):** AI-Powered Career Platform  
+**Previous:** Simple application auto-fill tool
+
+**Core Value Proposition:** Turn your job search into a competitive advantage with intelligent assistance that maintains user control—helping you apply smarter and faster while keeping applications personal and authentic.
 
 ## Index
 
@@ -32,6 +41,26 @@ JobLook/
     └── alembic/             # migrations
 ```
 
-## Current status
+## Marketing Website Features
 
-See [STATUS.md](STATUS.md) for a live snapshot. Short version (2026-04-15): M1 shipped; M2 code complete; Postgres + backend running locally; awaiting live-site Greenhouse smoke test.
+**Core Capabilities:**
+- Smart Job Discovery & Personalized Matching
+- AI Resume & Application Optimizer  
+- Application Acceleration & Autofill
+- Centralized Pipeline Dashboard
+- Career Support Tools
+- AI-Powered Career Acceleration (Premium)
+
+**Business Model:** Freemium with Premium tier at $19/month or $149/year
+
+## Current Status
+
+See [STATUS.md](STATUS.md) for a live snapshot. 
+
+**Latest Updates (April 2026):**
+- ✅ Complete marketing website redesign with new positioning
+- ✅ Premium tier definition and pricing page
+- ✅ AI-powered feature roadmap defined
+- ✅ Demo server for local testing
+- 🔄 Backend premium feature implementation (in progress)
+- 📋 User dashboard redesign (planned)
