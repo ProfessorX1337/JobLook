@@ -21,3 +21,5 @@ export async function getProfile() {
 export async function requestAutofill(payload) {
   return bgFetch("/api/extension/autofill", { method: "POST", body: payload });
 }
+
+export const postAutofill = requestAutofill;

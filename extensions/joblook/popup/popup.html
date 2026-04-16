@@ -1,24 +1,164 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <title>JobLook</title>
   <style>
-    body { font: 13px -apple-system, sans-serif; width: 280px; padding: 12px; margin: 0; }
-    h1 { font-size: 15px; margin: 0 0 10px; }
-    button { width: 100%; padding: 8px; margin-top: 6px; border: 0; border-radius: 4px; cursor: pointer; background: #2b6cb0; color: #fff; }
-    button.secondary { background: #eee; color: #111; }
-    .status { color: #666; margin: 8px 0; min-height: 1.4em; }
-    .row { display: flex; justify-content: space-between; align-items: center; }
-    a { color: #2b6cb0; }
+    :root {
+      --ink:#0b1220; --ink-soft:#3b4252; --mute:#64748b;
+      --line:#e5e7eb; --line-soft:#f1f3f5; --bg:#fafaf7; --paper:#ffffff;
+      --brand:#2563eb; --brand-soft:#eff4ff; --ok:#10b981; --ok-soft:rgba(16,185,129,.1);
+      --warn:#f59e0b;
+      --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    }
+    * { box-sizing:border-box; }
+    html, body { margin:0; }
+    body {
+      width:340px;
+      font:13px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color:var(--ink); background:var(--bg);
+      -webkit-font-smoothing:antialiased;
+    }
+    .head {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:.85rem 1rem; border-bottom:1px solid var(--line); background:var(--paper);
+    }
+    .brand { display:flex; align-items:center; gap:.5rem; font-weight:700; letter-spacing:-0.01em; }
+    .mark { width:22px; height:22px; border-radius:5px; background:var(--ink); color:#fafaf7; display:grid; place-items:center; font-weight:800; font-size:.78rem; position:relative; }
+    .mark::after { content:""; position:absolute; top:3px; right:3px; width:5px; height:5px; background:var(--brand); border-radius:1px; }
+    .status-dot { display:flex; align-items:center; gap:.35rem; font-family:var(--mono); font-size:.7rem; color:var(--mute); text-transform:uppercase; letter-spacing:.08em; }
+    .status-dot .d { width:6px; height:6px; border-radius:50%; background:var(--mute); }
+    .status-dot.ok .d { background:var(--ok); }
+    .status-dot.warn .d { background:var(--warn); }
+    .status-dot.off .d { background:var(--mute); }
+
+    .body { padding:.9rem 1rem 1rem; }
+
+    .card { padding:.85rem; background:var(--paper); border:1px solid var(--line); border-radius:10px; }
+    .card + .card { margin-top:.6rem; }
+
+    .label { font-family:var(--mono); font-size:.68rem; color:var(--mute); text-transform:uppercase; letter-spacing:.1em; margin-bottom:.35rem; }
+
+    .profile { display:flex; gap:.65rem; align-items:center; }
+    .avatar { width:30px; height:30px; border-radius:50%; background:var(--brand-soft); color:var(--brand); display:grid; place-items:center; font-weight:700; font-size:.85rem; flex-shrink:0; }
+    .pname { font-weight:600; color:var(--ink); font-size:.85rem; line-height:1.2; }
+    .pemail { color:var(--mute); font-size:.75rem; line-height:1.2; margin-top:2px; word-break:break-all; }
+
+    .title { font-weight:600; color:var(--ink); font-size:.9rem; margin-bottom:.2rem; }
+    .msg { color:var(--ink-soft); font-size:.82rem; }
+    .msg b { color:var(--ink); font-weight:600; }
+
+    .btn {
+      display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
+      width:100%; padding:.7rem; margin-top:.7rem;
+      border:1px solid transparent; border-radius:8px; cursor:pointer;
+      font:inherit; font-weight:600; font-size:.85rem; text-decoration:none;
+      transition:background .15s ease, border-color .15s ease;
+    }
+    .btn.primary { background:var(--ink); color:#fff; }
+    .btn.primary:hover { background:#1e293b; }
+    .btn.primary:disabled { background:#cbd5e1; color:#fff; cursor:not-allowed; }
+    .btn.ghost { background:transparent; color:var(--ink); border-color:var(--line); }
+    .btn.ghost:hover { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .btn.link { background:none; border:0; color:var(--mute); text-decoration:underline; padding:.35rem; margin-top:.25rem; font-size:.75rem; width:auto; }
+    .btn.link:hover { color:var(--ink); }
+
+    .fills { display:flex; gap:.5rem; margin-top:.5rem; }
+    .chip { flex:1; text-align:center; padding:.4rem .5rem; background:var(--bg); border:1px solid var(--line); border-radius:6px; }
+    .chip .v { font-weight:700; color:var(--ink); font-size:.95rem; font-family:var(--mono); }
+    .chip .l { color:var(--mute); font-size:.66rem; text-transform:uppercase; letter-spacing:.08em; margin-top:2px; }
+    .chip.ok .v { color:var(--ok); }
+
+    .success { background:var(--ok-soft); border-color:rgba(16,185,129,.3); }
+    .success .title { color:var(--ok); }
+
+    .foot { padding:.6rem 1rem; border-top:1px solid var(--line-soft); text-align:center; font-family:var(--mono); font-size:.68rem; color:var(--mute); background:var(--paper); }
+    .foot a { color:var(--mute); text-decoration:none; }
+    .foot a:hover { color:var(--ink); text-decoration:underline; }
+    .foot .sep { margin:0 .5rem; color:var(--line); }
+
+    [hidden] { display:none !important; }
   </style>
 </head>
 <body>
-  <h1>JobLook</h1>
-  <div id="auth" class="row"></div>
-  <div id="detect" class="status"></div>
-  <button id="fill-btn">Fill standard fields</button>
-  <div id="result" class="status" aria-live="polite"></div>
+  <div class="head">
+    <div class="brand"><span class="mark">J</span>JobLook</div>
+    <div id="status-dot" class="status-dot off"><span class="d"></span><span class="t">Offline</span></div>
+  </div>
+
+  <div class="body">
+
+    <!-- State: not signed in -->
+    <section id="view-signin" class="card" hidden>
+      <div class="title">Sign in to get started</div>
+      <div class="msg">Connect your JobLook account to autofill applications with your resume.</div>
+      <a class="btn primary" id="signin-btn" href="#" target="_blank" rel="noopener">Sign in & connect</a>
+    </section>
+
+    <!-- State: signed in (shared profile card) -->
+    <section id="view-profile" class="card" hidden>
+      <div class="label">Signed in as</div>
+      <div class="profile">
+        <div class="avatar" id="avatar">—</div>
+        <div>
+          <div class="pname" id="pname">—</div>
+          <div class="pemail" id="pemail">—</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- State: on unsupported page -->
+    <section id="view-unsupported" class="card" hidden>
+      <div class="title">Not a supported job page</div>
+      <div class="msg">Open a posting on <b>Greenhouse</b>, <b>Lever</b>, or <b>Ashby</b> — then come back here.</div>
+      <a class="btn ghost" href="https://boards.greenhouse.io" target="_blank" rel="noopener">Browse Greenhouse jobs</a>
+    </section>
+
+    <!-- State: on supported page, no form -->
+    <section id="view-noform" class="card" hidden>
+      <div class="title">No application form here</div>
+      <div class="msg">Make sure you're on the page where the <b>Apply</b> form is open.</div>
+    </section>
+
+    <!-- State: form detected -->
+    <section id="view-detected" class="card" hidden>
+      <div class="label">Form detected</div>
+      <div class="title"><span id="detect-adapter">Greenhouse</span> application</div>
+      <div class="msg"><span id="field-count">—</span> fields ready to fill.</div>
+      <button class="btn primary" id="fill-btn">Fill standard fields</button>
+      <button class="btn ghost" id="fill-custom-btn">Fill custom answers (AI)</button>
+    </section>
+
+    <!-- State: filled -->
+    <section id="view-filled" class="card success" hidden>
+      <div class="title">✓ Fill complete</div>
+      <div class="msg">Review each field, then click submit on the page.</div>
+      <div class="fills">
+        <div class="chip ok"><div class="v" id="n-filled">0</div><div class="l">Filled</div></div>
+        <div class="chip"><div class="v" id="n-skipped">0</div><div class="l">Skipped</div></div>
+        <div class="chip"><div class="v" id="n-unknown">0</div><div class="l">Unknown</div></div>
+      </div>
+      <div id="custom-results" hidden>
+        <div class="msg" style="margin-top:.5rem;font-size:.8rem;">Custom answers: <b id="n-custom-filled">0</b> filled, <b id="n-custom-skipped">0</b> skipped via AI</div>
+      </div>
+      <button class="btn ghost" id="refill-btn">Fill again</button>
+    </section>
+
+    <!-- State: error -->
+    <section id="view-error" class="card" hidden>
+      <div class="title">Something went wrong</div>
+      <div class="msg" id="err-msg">—</div>
+      <button class="btn ghost" id="retry-btn">Retry</button>
+    </section>
+
+  </div>
+
+  <div class="foot">
+    <a href="#" id="dashboard-link" target="_blank" rel="noopener">Dashboard</a>
+    <span class="sep">·</span>
+    <a href="#" id="signout-link">Sign out</a>
+  </div>
+
   <script type="module" src="popup.js"></script>
 </body>
 </html>
