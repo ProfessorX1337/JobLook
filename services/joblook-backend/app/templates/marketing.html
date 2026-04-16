@@ -1,171 +1,607 @@
 {% extends "base.html" %}
-{% block title %}JobLook — Your AI-Powered Career Advantage{% endblock %}
+{% block title %}JobLook — The autofill that actually reads the job{% endblock %}
 {% block body %}
-<section class="hero">
-  <div class="hero-content">
-    <h1>Your AI-Powered Career Advantage</h1>
-    <p class="hero-subtitle">Transform the chaotic, time-consuming job hunt into a structured, efficient process. Joblook combines AI-driven matching, automation, and organization into one seamless experience—so you can spend less time on repetitive tasks and more time landing opportunities.</p>
-    <div class="hero-cta">
-      <a class="cta primary" href="/signup">Start Free Today</a>
-      <a class="cta secondary" href="/product">See How It Works</a>
-    </div>
-    <p class="hero-note">✓ Start free • Upgrade when you need more power</p>
-  </div>
-  <div class="hero-visual">
-    <div class="browser-mockup">
-      <div class="browser-header">
-        <div class="browser-dots">
-          <span></span><span></span><span></span>
-        </div>
-        <div class="browser-url">greenhouse.io/application</div>
-      </div>
-      <div class="form-preview">
-        <div class="form-field filled">
-          <label>Full Name</label>
-          <input value="John Smith" readonly>
-        </div>
-        <div class="form-field filled">
-          <label>Email</label>
-          <input value="john@example.com" readonly>
-        </div>
-        <div class="form-field filling">
-          <label>Why are you interested in this role?</label>
-          <textarea readonly>I'm passionate about this opportunity because it combines my experience in...</textarea>
-          <div class="ai-indicator">✨ AI-powered</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+{# Chrome Web Store listing URL — replace when we submit (tracked in PRD §M7). #}
+{% set chrome_store_url = "#install" %}
+<style>
+  .lp { --ink:#0b1220; --ink-soft:#3b4252; --mute:#64748b; --line:#e5e7eb; --bg:#fafaf7; --paper:#ffffff; --brand:#2563eb; --brand-soft:#eff4ff; --ok:#10b981; --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  .lp { background:var(--bg); color:var(--ink); }
+  .lp h1, .lp h2, .lp h3 { letter-spacing:-0.02em; }
 
-<section class="features">
-  <div class="container">
-    <h2>Core Capabilities</h2>
-    <p class="section-subtitle">Everything you need to turn job searching into your competitive advantage</p>
-    
-    <div class="features-grid">
-      <div class="feature">
-        <div class="feature-icon">🎯</div>
-        <h3>Smart Job Discovery & Personalized Matching</h3>
-        <p>Build a rich profile with your skills, experience, preferences, and deal-breakers. Our AI scans millions of opportunities to deliver highly relevant recommendations tailored to your goals.</p>
+  /* Hero */
+  .lp-hero { max-width:1200px; margin:0 auto; padding:5rem 1.5rem 4rem; display:grid; grid-template-columns: 1.05fr 1fr; gap:4rem; align-items:center; }
+  .lp-hero .eyebrow { display:inline-flex; align-items:center; gap:.5rem; font-family:var(--mono); font-size:.78rem; color:var(--mute); text-transform:uppercase; letter-spacing:.12em; margin-bottom:1.25rem; }
+  .lp-hero .eyebrow::before { content:""; width:6px; height:6px; background:var(--ok); border-radius:50%; box-shadow:0 0 0 4px rgba(16,185,129,.15); }
+  .lp-hero h1 { font-size:clamp(2.4rem, 4.5vw, 3.75rem); line-height:1.02; font-weight:800; margin:0 0 1.25rem; color:var(--ink); background:none; -webkit-text-fill-color:initial; }
+  .lp-hero h1 em { font-style:normal; background:linear-gradient(180deg, transparent 62%, rgba(37,99,235,.22) 62%); padding:0 .1em; }
+  .lp-hero .sub { font-size:1.15rem; color:var(--ink-soft); max-width:32em; margin:0 0 2rem; line-height:1.55; }
+  .lp-hero .sub code { font-family:var(--mono); font-size:.92em; background:#eef2ff; color:var(--brand); padding:.1em .4em; border-radius:4px; }
+  .lp-hero .actions { display:flex; gap:.75rem; flex-wrap:wrap; }
+  .lp-hero .actions .cta.primary { background:var(--ink); }
+  .lp-hero .actions .cta.primary:hover { background:#1e293b; }
+  .lp .cta.chrome { display:inline-flex; align-items:center; gap:.6rem; }
+  .lp .cta.chrome .chrome-ic { flex-shrink:0; }
+  .lp-hero .actions .cta.secondary { color:var(--ink); border-color:var(--line); }
+  .lp-hero .actions .cta.secondary:hover { background:var(--ink); color:white; border-color:var(--ink); }
+  .lp-hero .foot { margin-top:1.25rem; font-family:var(--mono); font-size:.8rem; color:var(--mute); }
+
+  /* Live form visual */
+  .lp-demo { position:relative; }
+  .lp-demo::before { content:""; position:absolute; inset:-24px -24px -24px -24px; background:radial-gradient(60% 60% at 70% 30%, rgba(37,99,235,.08), transparent 70%); z-index:0; }
+  .lp-window { position:relative; z-index:1; background:var(--paper); border:1px solid var(--line); border-radius:14px; box-shadow:0 30px 60px -20px rgba(15,23,42,.18), 0 10px 20px -10px rgba(15,23,42,.08); overflow:hidden; }
+  .lp-chrome { display:flex; align-items:center; gap:.5rem; padding:.6rem .85rem; background:#f6f6f2; border-bottom:1px solid var(--line); }
+  .lp-chrome .dots { display:flex; gap:.4rem; }
+  .lp-chrome .dots span { width:10px; height:10px; border-radius:50%; background:#ddd; }
+  .lp-chrome .dots span:nth-child(1){background:#ff6059;} .lp-chrome .dots span:nth-child(2){background:#ffbd2e;} .lp-chrome .dots span:nth-child(3){background:#29c840;}
+  .lp-chrome .url { flex:1; margin-left:.5rem; font-family:var(--mono); font-size:.78rem; color:var(--mute); background:white; border:1px solid var(--line); border-radius:6px; padding:.35rem .6rem; }
+  .lp-chrome .ext { display:flex; align-items:center; gap:.35rem; font-family:var(--mono); font-size:.72rem; color:var(--brand); background:var(--brand-soft); padding:.3rem .55rem; border-radius:6px; }
+  .lp-chrome .ext .pulse { width:7px; height:7px; border-radius:50%; background:var(--brand); animation:lp-pulse 1.6s ease-out infinite; }
+  @keyframes lp-pulse { 0%{box-shadow:0 0 0 0 rgba(37,99,235,.5);} 70%{box-shadow:0 0 0 8px rgba(37,99,235,0);} 100%{box-shadow:0 0 0 0 rgba(37,99,235,0);} }
+
+  .lp-form { padding:1.5rem 1.5rem 1.25rem; }
+  .lp-job { font-family:var(--mono); font-size:.72rem; color:var(--mute); margin-bottom:1rem; letter-spacing:.04em; }
+  .lp-job b { color:var(--ink); font-weight:600; }
+  .lp-row { margin-bottom:1rem; }
+  .lp-row label { display:block; font-size:.8rem; font-weight:600; color:var(--ink-soft); margin-bottom:.35rem; }
+  .lp-row .val { position:relative; padding:.65rem .8rem; border:1px solid var(--line); border-radius:8px; background:#fcfcfa; font-size:.9rem; color:var(--ink); min-height:1.25rem; transition:background .25s ease, border-color .25s ease; }
+  .lp-row.is-filled .val { background:rgba(16,185,129,.07); border-color:rgba(16,185,129,.45); }
+  .lp-row.is-filled .val::after { content:"✓"; position:absolute; right:.65rem; top:50%; transform:translateY(-50%); color:var(--ok); font-weight:700; font-size:.85rem; opacity:0; animation:lp-pop .3s ease forwards; }
+  @keyframes lp-pop { from{opacity:0; transform:translateY(-50%) scale(.6);} to{opacity:1; transform:translateY(-50%) scale(1);} }
+  .lp-row .val .ghost { color:var(--mute); }
+
+  .lp-row.tailor label { display:flex; align-items:center; justify-content:space-between; }
+  .lp-row.tailor .tag { font-family:var(--mono); font-size:.68rem; color:var(--brand); background:var(--brand-soft); padding:.2rem .45rem; border-radius:6px; opacity:0; transform:translateY(-4px); transition:opacity .3s, transform .3s; }
+  .lp-row.tailor.is-writing .tag { opacity:1; transform:none; }
+  .lp-row.tailor .val { min-height:5.5rem; line-height:1.5; border-color:rgba(37,99,235,.35); background:linear-gradient(180deg, rgba(37,99,235,.04), rgba(37,99,235,.02)); }
+  .lp-row.tailor .caret { display:inline-block; width:2px; height:1.05em; background:var(--brand); vertical-align:-2px; margin-left:1px; animation:lp-blink 1s steps(1) infinite; }
+  .lp-row.tailor.is-done .caret { display:none; }
+  @keyframes lp-blink { 50% { opacity:0; } }
+
+  .lp-submit { display:flex; align-items:center; justify-content:space-between; padding:.9rem 1.5rem 1.25rem; border-top:1px dashed var(--line); color:var(--mute); font-size:.8rem; }
+  .lp-submit .btn { background:#e5e7eb; color:#9ca3af; border-radius:8px; padding:.55rem 1rem; font-weight:600; font-size:.85rem; }
+  .lp-submit .note { font-family:var(--mono); font-size:.72rem; }
+
+  /* How it works */
+  .lp-how { max-width:1100px; margin:0 auto; padding:4rem 1.5rem 5rem; }
+  .lp-how .kicker { font-family:var(--mono); font-size:.78rem; text-transform:uppercase; letter-spacing:.12em; color:var(--mute); text-align:center; margin-bottom:.5rem; }
+  .lp-how h2 { text-align:center; font-size:clamp(1.75rem, 3vw, 2.4rem); margin:0 0 3rem; }
+  .lp-steps { display:grid; grid-template-columns:repeat(3, 1fr); gap:0; position:relative; }
+  .lp-steps::before { content:""; position:absolute; top:1.25rem; left:12%; right:12%; height:1px; background:repeating-linear-gradient(90deg, var(--line) 0 8px, transparent 8px 16px); z-index:0; }
+  .lp-step { position:relative; z-index:1; padding:0 1.25rem; text-align:center; }
+  .lp-step .num { width:2.5rem; height:2.5rem; margin:0 auto 1rem; border-radius:50%; background:var(--paper); border:1px solid var(--line); display:grid; place-items:center; font-family:var(--mono); font-weight:700; color:var(--ink); }
+  .lp-step h3 { font-size:1.1rem; margin:0 0 .5rem; }
+  .lp-step p { color:var(--ink-soft); font-size:.95rem; margin:0; line-height:1.55; }
+
+  /* Final CTA */
+  .lp-end { max-width:900px; margin:0 auto 6rem; padding:3rem 1.5rem; text-align:center; background:var(--paper); border:1px solid var(--line); border-radius:16px; }
+  .lp-end h2 { font-size:clamp(1.6rem, 2.8vw, 2.1rem); margin:0 0 .75rem; }
+  .lp-end p { color:var(--ink-soft); margin:0 0 1.75rem; }
+  .lp-end .cta.primary { background:var(--ink); }
+  .lp-end .cta.primary:hover { background:#1e293b; }
+  .lp-end .meta { margin-top:1.25rem; font-family:var(--mono); font-size:.75rem; color:var(--mute); }
+
+  /* Hero icon strip */
+  .lp-feat { display:grid; grid-template-columns:repeat(4, 1fr); gap:1rem; margin-top:2.5rem; padding-top:2rem; border-top:1px dashed var(--line); max-width:520px; }
+  .lp-feat .f { display:flex; flex-direction:column; gap:.5rem; }
+  .lp-feat .f svg { width:22px; height:22px; stroke:var(--ink); fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+  .lp-feat .f .lab { font-family:var(--mono); font-size:.68rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.08em; line-height:1.35; }
+
+  /* Mid-page CTA row */
+  .lp-mid { max-width:900px; margin:0 auto; padding:1rem 1.5rem 3rem; text-align:center; }
+  .lp-mid .row { display:inline-flex; align-items:center; gap:1rem; padding:1.25rem 1.75rem; background:var(--paper); border:1px solid var(--line); border-radius:999px; box-shadow:0 1px 2px rgba(15,23,42,.04); flex-wrap:wrap; justify-content:center; }
+  .lp-mid .row .msg { font-size:.95rem; color:var(--ink-soft); margin:0; }
+  .lp-mid .row .msg b { color:var(--ink); font-weight:600; }
+  .lp-mid .row .cta { padding:.6rem 1.1rem; font-size:.9rem; background:var(--ink); color:#fff; border-radius:999px; }
+  .lp-mid .row .cta:hover { background:#1e293b; }
+  .lp-mid .row .cta svg { margin-right:.35rem; vertical-align:-3px; }
+
+  /* Small things grid */
+  .lp-small { max-width:1100px; margin:0 auto; padding:4rem 1.5rem; }
+  .lp-small .kicker { font-family:var(--mono); font-size:.78rem; text-transform:uppercase; letter-spacing:.12em; color:var(--mute); text-align:center; margin-bottom:.5rem; }
+  .lp-small h2 { text-align:center; font-size:clamp(1.75rem, 2.8vw, 2.2rem); margin:0 auto 2.5rem; max-width:22ch; }
+  .lp-small-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:1.25rem 2rem; }
+  .lp-small-item { padding:1.25rem 0 1.25rem 1.25rem; border-left:2px solid var(--line); transition:border-color .2s ease; }
+  .lp-small-item:hover { border-left-color:var(--ink); }
+  .lp-small-item h3 { font-size:1rem; margin:0 0 .35rem; font-weight:700; }
+  .lp-small-item h3 .ic { font-family:var(--mono); color:var(--brand); font-size:.7rem; margin-right:.5rem; font-weight:600; letter-spacing:.08em; }
+  .lp-small-item p { font-size:.9rem; color:var(--ink-soft); margin:0; line-height:1.55; }
+
+  /* Problem */
+  .lp-problem { max-width:900px; margin:0 auto; padding:4rem 1.5rem 2rem; }
+  .lp-problem .kicker { font-family:var(--mono); font-size:.78rem; text-transform:uppercase; letter-spacing:.12em; color:var(--mute); margin-bottom:.75rem; }
+  .lp-problem h2 { font-size:clamp(1.9rem, 3.2vw, 2.6rem); margin:0 0 1.5rem; max-width:18ch; line-height:1.1; }
+  .lp-problem p { font-size:1.1rem; color:var(--ink-soft); line-height:1.7; margin:0 0 1.25rem; max-width:38em; }
+  .lp-problem p b { color:var(--ink); font-weight:600; }
+  .lp-problem .stat-row { display:grid; grid-template-columns:repeat(3, 1fr); gap:1.5rem; margin-top:2.5rem; padding:1.5rem 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .lp-problem .stat { }
+  .lp-problem .stat .n { font-size:2rem; font-weight:800; color:var(--ink); letter-spacing:-0.02em; }
+  .lp-problem .stat .t { font-family:var(--mono); font-size:.72rem; color:var(--mute); text-transform:uppercase; letter-spacing:.08em; margin-top:.25rem; }
+
+  /* Capabilities */
+  .lp-cap { max-width:1200px; margin:0 auto; padding:4rem 1.5rem; }
+  .lp-cap .kicker { font-family:var(--mono); font-size:.78rem; text-transform:uppercase; letter-spacing:.12em; color:var(--mute); text-align:center; margin-bottom:.5rem; }
+  .lp-cap h2 { text-align:center; font-size:clamp(1.9rem, 3.2vw, 2.6rem); margin:0 auto 3rem; max-width:22ch; }
+  .lp-cap-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:1.5rem; }
+  .lp-cap-card { background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:2rem; display:flex; flex-direction:column; }
+  .lp-cap-card .ic { font-family:var(--mono); font-size:.7rem; color:var(--brand); letter-spacing:.12em; text-transform:uppercase; margin-bottom:1rem; }
+  .lp-cap-card h3 { font-size:1.15rem; margin:0 0 .75rem; line-height:1.25; }
+  .lp-cap-card p { color:var(--ink-soft); font-size:.95rem; line-height:1.6; margin:0 0 1rem; }
+  .lp-cap-card .hint { margin-top:auto; padding-top:1rem; border-top:1px dashed var(--line); font-family:var(--mono); font-size:.72rem; color:var(--mute); }
+
+  /* Calculator */
+  .lp-calc { max-width:1100px; margin:0 auto; padding:4rem 1.5rem; }
+  .lp-calc-inner { background:var(--ink); color:#f1f5f9; border-radius:20px; padding:3rem; display:grid; grid-template-columns:1.1fr 1fr; gap:3rem; align-items:center; overflow:hidden; position:relative; }
+  .lp-calc-inner::before { content:""; position:absolute; top:-80px; right:-80px; width:320px; height:320px; background:radial-gradient(circle, rgba(37,99,235,.3), transparent 70%); pointer-events:none; }
+  .lp-calc .kicker { font-family:var(--mono); font-size:.75rem; color:#94a3b8; text-transform:uppercase; letter-spacing:.12em; margin-bottom:.75rem; position:relative; }
+  .lp-calc h2 { font-size:clamp(1.6rem, 2.8vw, 2.2rem); margin:0 0 1rem; color:#fff; position:relative; max-width:18ch; line-height:1.15; }
+  .lp-calc .pitch { color:#cbd5e1; font-size:1rem; margin:0 0 2rem; line-height:1.6; max-width:30em; position:relative; }
+  .lp-calc .controls { display:flex; flex-direction:column; gap:1.5rem; position:relative; }
+  .lp-calc .ctrl { }
+  .lp-calc .ctrl-label { display:flex; justify-content:space-between; font-family:var(--mono); font-size:.78rem; color:#cbd5e1; margin-bottom:.5rem; }
+  .lp-calc .ctrl-label b { color:#fff; font-weight:700; }
+  .lp-calc input[type="range"] { width:100%; appearance:none; -webkit-appearance:none; height:6px; border-radius:3px; background:#334155; outline:none; cursor:pointer; }
+  .lp-calc input[type="range"]::-webkit-slider-thumb { appearance:none; -webkit-appearance:none; width:20px; height:20px; border-radius:50%; background:#fff; cursor:pointer; border:2px solid var(--brand); transition:transform .15s; }
+  .lp-calc input[type="range"]::-webkit-slider-thumb:hover { transform:scale(1.15); }
+  .lp-calc input[type="range"]::-moz-range-thumb { width:20px; height:20px; border-radius:50%; background:#fff; cursor:pointer; border:2px solid var(--brand); }
+
+  .lp-calc-out { position:relative; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); border-radius:14px; padding:2rem; text-align:center; }
+  .lp-calc-out .top { font-family:var(--mono); font-size:.72rem; color:#94a3b8; text-transform:uppercase; letter-spacing:.1em; margin-bottom:.5rem; }
+  .lp-calc-out .big { font-size:clamp(3rem, 7vw, 4.5rem); font-weight:800; color:#fff; line-height:1; letter-spacing:-0.03em; font-variant-numeric:tabular-nums; }
+  .lp-calc-out .big .unit { font-size:.45em; color:#94a3b8; font-weight:600; margin-left:.25rem; }
+  .lp-calc-out .back-to-you { margin-top:.75rem; color:#e2e8f0; font-size:.9rem; line-height:1.5; }
+  .lp-calc-out .back-to-you b { color:#a5f3c4; font-weight:700; }
+  .lp-calc-out .compare { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; margin-top:1.25rem; padding-top:1.25rem; border-top:1px solid rgba(255,255,255,.1); }
+  .lp-calc-out .compare .c { }
+  .lp-calc-out .compare .c .l { font-family:var(--mono); font-size:.68rem; color:#94a3b8; text-transform:uppercase; letter-spacing:.08em; }
+  .lp-calc-out .compare .c .v { font-size:1.1rem; font-weight:700; color:#fff; margin-top:.2rem; font-variant-numeric:tabular-nums; }
+  .lp-calc-out .compare .c.was .v { color:#fca5a5; text-decoration:line-through; text-decoration-color:#ef4444; }
+  .lp-calc-out .compare .c.now .v { color:#a5f3c4; }
+
+  /* Tiers */
+  .lp-tiers { max-width:1100px; margin:0 auto; padding:4rem 1.5rem; }
+  .lp-tiers .kicker { font-family:var(--mono); font-size:.78rem; text-transform:uppercase; letter-spacing:.12em; color:var(--mute); text-align:center; margin-bottom:.5rem; }
+  .lp-tiers h2 { text-align:center; font-size:clamp(1.9rem, 3.2vw, 2.6rem); margin:0 auto 1rem; max-width:22ch; }
+  .lp-tiers .sub { text-align:center; color:var(--ink-soft); max-width:48ch; margin:0 auto 3rem; font-size:1.05rem; line-height:1.6; }
+  .lp-tier-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; align-items:stretch; }
+  .lp-tier { background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:2rem; display:flex; flex-direction:column; position:relative; }
+  .lp-tier.featured { border:2px solid var(--ink); background:#fff; box-shadow:0 20px 40px -20px rgba(15,23,42,.2); }
+  .lp-tier .badge { position:absolute; top:-12px; right:2rem; background:var(--ink); color:#fff; font-family:var(--mono); font-size:.7rem; padding:.3rem .7rem; border-radius:20px; letter-spacing:.08em; text-transform:uppercase; }
+  .lp-tier .name { font-family:var(--mono); font-size:.75rem; color:var(--mute); text-transform:uppercase; letter-spacing:.12em; margin-bottom:.5rem; }
+  .lp-tier .price { font-size:2.25rem; font-weight:800; color:var(--ink); letter-spacing:-0.02em; }
+  .lp-tier .price .per { font-size:1rem; color:var(--mute); font-weight:500; margin-left:.25rem; }
+  .lp-tier .price-note { font-size:.85rem; color:var(--mute); margin-top:.2rem; }
+  .lp-tier .lede { margin:1.25rem 0 1.5rem; color:var(--ink-soft); font-size:1rem; line-height:1.5; }
+  .lp-tier .lede b { color:var(--ink); }
+  .lp-tier ul { list-style:none; padding:0; margin:0 0 2rem; display:flex; flex-direction:column; gap:.75rem; }
+  .lp-tier li { display:flex; gap:.6rem; align-items:flex-start; font-size:.95rem; line-height:1.5; color:var(--ink-soft); }
+  .lp-tier li::before { content:""; flex-shrink:0; width:18px; height:18px; border-radius:50%; margin-top:.15rem; background:var(--ok-soft, rgba(16,185,129,.15)) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='none' stroke='%2310b981' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' d='M3 8.5l3.5 3.5L13 5'/></svg>") center/10px no-repeat; }
+  .lp-tier li b { color:var(--ink); font-weight:600; }
+  .lp-tier .cta { margin-top:auto; width:100%; }
+  .lp-tier .cta.primary { background:var(--ink); }
+  .lp-tier .cta.primary:hover { background:#1e293b; }
+
+  /* FAQ */
+  .lp-faq { max-width:820px; margin:0 auto; padding:4rem 1.5rem; }
+  .lp-faq .kicker { font-family:var(--mono); font-size:.78rem; text-transform:uppercase; letter-spacing:.12em; color:var(--mute); text-align:center; margin-bottom:.5rem; }
+  .lp-faq h2 { text-align:center; font-size:clamp(1.8rem, 3vw, 2.4rem); margin:0 0 2.5rem; }
+  .lp-faq details { border-top:1px solid var(--line); padding:1.25rem 0; }
+  .lp-faq details:last-child { border-bottom:1px solid var(--line); }
+  .lp-faq summary { list-style:none; cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-weight:600; font-size:1.05rem; color:var(--ink); }
+  .lp-faq summary::-webkit-details-marker { display:none; }
+  .lp-faq summary::after { content:"+"; font-family:var(--mono); font-size:1.5rem; color:var(--mute); transition:transform .2s ease; }
+  .lp-faq details[open] summary::after { content:"–"; }
+  .lp-faq details p { margin:.85rem 0 0; color:var(--ink-soft); line-height:1.7; font-size:.98rem; }
+
+  @media (max-width: 860px) {
+    .lp-hero { grid-template-columns:1fr; padding-top:3rem; gap:2.5rem; }
+    .lp-steps { grid-template-columns:1fr; gap:2rem; }
+    .lp-steps::before { display:none; }
+    .lp-cap-grid { grid-template-columns:1fr; }
+    .lp-calc-inner { grid-template-columns:1fr; padding:2rem; gap:2rem; }
+    .lp-tier-grid { grid-template-columns:1fr; }
+    .lp-problem .stat-row { grid-template-columns:1fr; gap:1rem; }
+    .lp-feat { grid-template-columns:repeat(2, 1fr); max-width:100%; }
+    .lp-small-grid { grid-template-columns:1fr; gap:.25rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lp-chrome .ext .pulse { animation:none; }
+    .lp-row.tailor .caret { animation:none; }
+  }
+</style>
+
+<div class="lp">
+  <section class="lp-hero">
+    <div class="lp-copy">
+      <div class="eyebrow">Chrome extension · Greenhouse · Lever · Ashby</div>
+      <h1>The autofill that <em>actually reads the job</em>.</h1>
+      <p class="sub">JobLook is a Chrome extension that fills standard fields instantly on Greenhouse, Lever, and Ashby — and drafts tailored answers to long-form questions like <code>Why this role?</code> using your resume and the actual job description.</p>
+      <div class="actions">
+        <a class="cta primary chrome" href="{{ chrome_store_url }}">
+          <svg class="chrome-ic" width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="#fff"/><circle cx="24" cy="24" r="8" fill="#4285f4"/><path d="M24 4a20 20 0 0 1 17.32 10H24a10 10 0 0 0-8.66 5L7.68 5.82A19.93 19.93 0 0 1 24 4z" fill="#ea4335"/><path d="M41.32 14A20 20 0 0 1 24 44l8.66-15A10 10 0 0 0 32.66 14z" fill="#fbbc05"/><path d="M24 44A20 20 0 0 1 7.68 5.82L15.34 19A10 10 0 0 0 24 34z" fill="#34a853"/></svg>
+          Add to Chrome — free
+        </a>
+        <a class="cta secondary" href="/signup">Or sign up first →</a>
       </div>
-      
-      <div class="feature">
-        <div class="feature-icon">🤖</div>
-        <h3>AI Resume & Application Optimizer</h3>
-        <p>Create, tailor, and strengthen your materials in minutes. AI analyzes job descriptions, suggests keyword optimizations for ATS compatibility, and generates customized versions for each role.</p>
-      </div>
-      
-      <div class="feature">
-        <div class="feature-icon">⚡</div>
-        <h3>Application Acceleration & Autofill</h3>
-        <p>Apply faster with intelligent autofill that works across major job boards and ATS platforms. Fill forms in seconds, review and customize, then submit with confidence.</p>
-      </div>
-      
-      <div class="feature">
-        <div class="feature-icon">📊</div>
-        <h3>Centralized Pipeline Dashboard</h3>
-        <p>Manage your entire job search like a pro. Track every application in one place—status updates, interview schedules, notes, and follow-ups so nothing falls through the cracks.</p>
-      </div>
-      
-      <div class="feature">
-        <div class="feature-icon">🎓</div>
-        <h3>Career Support Tools</h3>
-        <p>Built-in resources for interview preparation, LinkedIn optimization, salary negotiation, and strategic career insights to support your long-term growth.</p>
-      </div>
-      
-      <div class="feature">
-        <div class="feature-icon">🚀</div>
-        <h3>AI-Powered Career Acceleration</h3>
-        <p>Unlimited mock interviews, personalized coaching, and salary negotiation simulators. Get expert-level guidance without the coach price tag.</p>
-        <div class="premium-badge">Premium</div>
+      <div class="foot">// works in 60 seconds · you always click submit</div>
+
+      <div class="lp-feat" aria-label="What JobLook does">
+        <div class="f">
+          <svg viewBox="0 0 24 24"><path d="M4 5h10M4 10h14M4 15h10M4 20h6"/><path d="M17 17l2 2 4-4"/></svg>
+          <div class="lab">One-click field autofill</div>
+        </div>
+        <div class="f">
+          <svg viewBox="0 0 24 24"><path d="M5 3v4M3 5h4M19 15v4M17 17h4"/><path d="M13 5l2.5 5.5L21 13l-5.5 2.5L13 21l-2.5-5.5L5 13l5.5-2.5z"/></svg>
+          <div class="lab">AI drafts long-form answers</div>
+        </div>
+        <div class="f">
+          <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="6" cy="6" r="1.5" fill="currentColor" stroke="none"/><circle cx="6" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="6" cy="18" r="1.5" fill="currentColor" stroke="none"/></svg>
+          <div class="lab">Pipeline tracker built in</div>
+        </div>
+        <div class="f">
+          <svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 8.5-9 10-5.5-1.5-9-5-9-10V6l9-4z"/><path d="M9 12l2 2 4-4"/></svg>
+          <div class="lab">Encrypted at rest, yours alone</div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
 
-<section class="premium-teaser">
-  <div class="container">
-    <h2>Ready to Turn Your Job Search Into a Competitive Advantage?</h2>
-    <p class="section-subtitle">Start free and unlock premium features when you need maximum leverage</p>
-    
-    <div class="tier-comparison">
-      <div class="tier free-tier">
-        <h3>Start Free</h3>
-        <p>Perfect for getting started</p>
+    <div class="lp-demo" aria-hidden="true">
+      <div class="lp-window">
+        <div class="lp-chrome">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <div class="url">boards.greenhouse.io/acme/jobs/4821</div>
+          <div class="ext"><span class="pulse"></span>JobLook</div>
+        </div>
+        <div class="lp-form">
+          <div class="lp-job">POSITION · <b>Senior Product Engineer</b> @ Acme · Remote (US)</div>
+
+          <div class="lp-row" data-field="name">
+            <label>Full name</label>
+            <div class="val"><span class="ghost">—</span></div>
+          </div>
+          <div class="lp-row" data-field="email">
+            <label>Email</label>
+            <div class="val"><span class="ghost">—</span></div>
+          </div>
+          <div class="lp-row" data-field="linkedin">
+            <label>LinkedIn</label>
+            <div class="val"><span class="ghost">—</span></div>
+          </div>
+
+          <div class="lp-row tailor" data-field="why">
+            <label>Why are you interested in this role? <span class="tag">✨ tailoring from resume + JD</span></label>
+            <div class="val"><span class="text"></span><span class="caret"></span></div>
+          </div>
+        </div>
+        <div class="lp-submit">
+          <span class="note">// review → edit → submit</span>
+          <span class="btn">Submit application</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-problem">
+    <div class="kicker">The problem</div>
+    <h2>Another Saturday, gone.</h2>
+    <p>The average job seeker spends <b>eleven hours a week</b> on applications. Most of those hours go into typing the same ten answers into differently-shaped forms. Name. Email. LinkedIn. Dates of employment. The one-line summary of a job you left two years ago.</p>
+    <p>Then come the open-ended questions — the ones that actually matter. <b>Why this company? What excites you about this role?</b> You already answered them yesterday, for a different company. And the day before, for another. The words blur. The enthusiasm thins. By application number twelve, you're copy-pasting a sentence you wrote on Tuesday and hoping nobody notices.</p>
+    <p>The grind isn't what makes you a stronger candidate. It's what stops you from applying to the next role — and the one after that.</p>
+    <div class="stat-row">
+      <div class="stat"><div class="n">11 hrs</div><div class="t">avg. weekly time on applications</div></div>
+      <div class="stat"><div class="n">~70%</div><div class="t">of fields repeat across postings</div></div>
+      <div class="stat"><div class="n">1 in 5</div><div class="t">jobseekers abandon applications mid-form</div></div>
+    </div>
+  </section>
+
+  <div class="lp-mid">
+    <div class="row">
+      <p class="msg"><b>Eleven hours a week.</b> JobLook is free to install — stop bleeding them.</p>
+      <a class="cta" href="{{ chrome_store_url }}">
+        <svg width="14" height="14" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="#fff"/><circle cx="24" cy="24" r="8" fill="#4285f4"/><path d="M24 4a20 20 0 0 1 17.32 10H24a10 10 0 0 0-8.66 5L7.68 5.82A19.93 19.93 0 0 1 24 4z" fill="#ea4335"/><path d="M41.32 14A20 20 0 0 1 24 44l8.66-15A10 10 0 0 0 32.66 14z" fill="#fbbc05"/><path d="M24 44A20 20 0 0 1 7.68 5.82L15.34 19A10 10 0 0 0 24 34z" fill="#34a853"/></svg>
+        Add to Chrome
+      </a>
+    </div>
+  </div>
+
+  <section class="lp-cap">
+    <div class="kicker">The free extension</div>
+    <h2>The extension reads the form so you don't have to.</h2>
+    <div class="lp-cap-grid">
+      <div class="lp-cap-card">
+        <div class="ic">01 · Standard fields</div>
+        <h3>Fills the same ten fields you've filled a thousand times.</h3>
+        <p>Name, email, phone, LinkedIn, work history, education, authorization status, relocation willingness. One click on any Greenhouse, Lever, or Ashby posting and they're in — correctly, in the right format, every time.</p>
+        <div class="hint">// ten seconds per form, not ten minutes</div>
+      </div>
+      <div class="lp-cap-card">
+        <div class="ic">02 · Tailored answers</div>
+        <h3>Drafts the open-ended questions in your own voice.</h3>
+        <p>"Why this role?" "What interests you about our company?" The extension reads the job description, cross-references your resume, and writes a first draft that sounds like you. You edit what needs editing. Most of the time, that's a sentence or two.</p>
+        <div class="hint">// 5 tailored answers per day, free</div>
+      </div>
+      <div class="lp-cap-card">
+        <div class="ic">03 · You stay in control</div>
+        <h3>Never submits for you. Ever.</h3>
+        <p>This is a tool, not an autopilot. You see every field. You review every answer. You click submit. If something looks wrong — a typo, a weak sentence, a company name swapped from a different application — you catch it before anyone on the other end does.</p>
+        <div class="hint">// assistive only · your data is encrypted at rest</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-calc">
+    <div class="lp-calc-inner">
+      <div>
+        <div class="kicker">Time calculator</div>
+        <h2>How many hours is the manual grind costing you?</h2>
+        <p class="pitch">Drag the sliders. The math is brutal — and it's the math we're trying to give you back.</p>
+        <div class="controls">
+          <div class="ctrl">
+            <div class="ctrl-label"><span>Applications per week</span><b><span id="calc-apps-v">10</span></b></div>
+            <input type="range" id="calc-apps" min="1" max="40" value="10" step="1">
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-label"><span>Minutes per application today</span><b><span id="calc-min-v">15</span> min</b></div>
+            <input type="range" id="calc-min" min="3" max="45" value="15" step="1">
+          </div>
+        </div>
+      </div>
+      <div class="lp-calc-out">
+        <div class="top">Hours back, every week</div>
+        <div class="big"><span id="calc-saved">2.3</span><span class="unit">hrs</span></div>
+        <div class="back-to-you">That's <b><span id="calc-year">121</span> hours a year</b> — almost three full work weeks you'd get back for the things that actually move your search forward: research, rehearsal, networking, rest.</div>
+        <div class="compare">
+          <div class="c was"><div class="l">Today</div><div class="v"><span id="calc-before">150</span> min/wk</div></div>
+          <div class="c now"><div class="l">With JobLook</div><div class="v"><span id="calc-after">10</span> min/wk</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="lp-mid">
+    <div class="row">
+      <p class="msg">See what your numbers look like? <b>Install takes one click.</b></p>
+      <a class="cta" href="{{ chrome_store_url }}">
+        <svg width="14" height="14" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="#fff"/><circle cx="24" cy="24" r="8" fill="#4285f4"/><path d="M24 4a20 20 0 0 1 17.32 10H24a10 10 0 0 0-8.66 5L7.68 5.82A19.93 19.93 0 0 1 24 4z" fill="#ea4335"/><path d="M41.32 14A20 20 0 0 1 24 44l8.66-15A10 10 0 0 0 32.66 14z" fill="#fbbc05"/><path d="M24 44A20 20 0 0 1 7.68 5.82L15.34 19A10 10 0 0 0 24 34z" fill="#34a853"/></svg>
+        Get the extension
+      </a>
+    </div>
+  </div>
+
+  <section class="lp-how">
+    <div class="kicker">How it works</div>
+    <h2>Three steps. No copy-paste.</h2>
+    <div class="lp-steps">
+      <div class="lp-step">
+        <div class="num">1</div>
+        <h3>Install the extension</h3>
+        <p>One click from the Chrome Web Store. We'll open a short welcome guide so you know what to do next.</p>
+      </div>
+      <div class="lp-step">
+        <div class="num">2</div>
+        <h3>Sign in and upload your resume</h3>
+        <p>We parse it into a structured profile — contact info, work history, skills, links. Encrypted at rest, used only by you.</p>
+      </div>
+      <div class="lp-step">
+        <div class="num">3</div>
+        <h3>Click Fill on any job page</h3>
+        <p>Standard fields populate instantly. For long-form questions, an LLM drafts a tailored answer. You review, edit, submit.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-tiers">
+    <div class="kicker">Free vs Premium</div>
+    <h2>Free fills the forms. Premium changes how fast you can move.</h2>
+    <p class="sub">Most people start with the free extension and never look back. Some — the ones applying to ten roles a week, the ones preparing for interviews that pay $30K more, the ones who treat their job search like a campaign — upgrade. Here's why.</p>
+    <div class="lp-tier-grid">
+      <div class="lp-tier">
+        <div class="name">Free</div>
+        <div class="price">$0<span class="per">forever</span></div>
+        <div class="price-note">No card. No trial clock.</div>
+        <p class="lede">Everything you need to <b>stop retyping</b> the same ten fields across every job board.</p>
         <ul>
-          <li>✓ Smart job matching</li>
-          <li>✓ Basic resume optimization</li>
-          <li>✓ Limited autofill applications</li>
-          <li>✓ Simple pipeline tracking</li>
+          <li><span><b>Unlimited autofill</b> on Greenhouse, Lever, and Ashby</span></li>
+          <li><span><b>5 tailored long-form answers</b> per day, drafted from your resume and the JD</span></li>
+          <li><span>One active resume profile, encrypted at rest</span></li>
+          <li><span>Application pipeline tracker — every submission in one place</span></li>
+          <li><span>No-autosubmit guarantee — you always click submit</span></li>
         </ul>
-        <a href="/signup" class="cta secondary">Start Free</a>
+        <a class="cta secondary" href="{{ chrome_store_url }}">Add to Chrome</a>
       </div>
-      
-      <div class="tier premium-tier featured">
-        <div class="tier-badge">Most Popular</div>
-        <h3>Unlock Premium</h3>
-        <p>Your full-time career co-pilot</p>
+      <div class="lp-tier featured">
+        <div class="badge">Premium</div>
+        <div class="name">Premium</div>
+        <div class="price">$19<span class="per">/month</span></div>
+        <div class="price-note">or $149/year (save 35%) · 14 days free</div>
+        <p class="lede">For people treating their search like a <b>campaign</b>, not a chore. Apply faster. Interview sharper. Negotiate from data, not hope.</p>
         <ul>
-          <li>✓ Everything in Free</li>
-          <li>✓ Unlimited AI interview coach</li>
-          <li>✓ Salary negotiation simulator</li>
-          <li>✓ Advanced analytics & A/B testing</li>
-          <li>✓ Company intelligence reports</li>
-          <li>✓ Unlimited smart autofill</li>
-          <li>✓ LinkedIn profile optimizer</li>
-          <li>✓ Priority support</li>
+          <li><span><b>Unlimited tailored answers</b> — apply to fifty roles in a weekend if you want to</span></li>
+          <li><span><b>Multiple resume variants</b> — swap between a PM version and an engineering version per posting</span></li>
+          <li><span><b>AI interview coach</b> — rehearse behavioral and technical questions with feedback, as many times as you need</span></li>
+          <li><span><b>Salary negotiation simulator</b> — practice the hard conversations before they cost you $20K</span></li>
+          <li><span><b>Match-score analytics</b> — know which postings are worth the effort before you start typing</span></li>
+          <li><span><b>Resume A/B testing</b> — see which phrasings actually get responses</span></li>
+          <li><span>Priority support from a human, not a chatbot</span></li>
         </ul>
-        <a href="/pricing" class="cta primary">View Premium Features</a>
+        <a class="cta primary" href="/pricing">See Premium in detail</a>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="social-proof">
-  <div class="container">
-    <h2>Join Professionals Who've Transformed Their Job Search</h2>
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-number">100,000+</div>
-        <div class="stat-label">Applications Optimized</div>
+  <section class="lp-small">
+    <div class="kicker">The small things that add up</div>
+    <h2>Details most job tools skip.</h2>
+    <div class="lp-small-grid">
+      <div class="lp-small-item">
+        <h3><span class="ic">01</span>Parse your resume once</h3>
+        <p>Upload a PDF or DOCX. We pull out contact, experience, education, and links into a structured profile you'll reuse forever.</p>
       </div>
-      <div class="stat">
-        <div class="stat-number">12%</div>
-        <div class="stat-label">Higher Offer Rate</div>
+      <div class="lp-small-item">
+        <h3><span class="ic">02</span>Pipeline tracker</h3>
+        <p>Every application in one place — company, role, status, notes, follow-up dates. Nothing falls through.</p>
       </div>
-      <div class="stat">
-        <div class="stat-number">85%</div>
-        <div class="stat-label">Time Saved</div>
+      <div class="lp-small-item">
+        <h3><span class="ic">03</span>Encrypted at rest</h3>
+        <p>Your resume data sits in Postgres with per-user encryption keys. Even our database admin couldn't read it.</p>
       </div>
-    </div>
-    
-    <div class="testimonials">
-      <div class="testimonial">
-        <p>"The AI interview coach helped me nail my Google interview. I got the offer with a 15% salary bump!"</p>
-        <div class="testimonial-author">— Sarah Chen, Software Engineer</div>
+      <div class="lp-small-item">
+        <h3><span class="ic">04</span>No-autosubmit guarantee</h3>
+        <p>JobLook fills fields and drafts answers. You click submit. No silent submissions, no agentic surprises.</p>
       </div>
-      <div class="testimonial">
-        <p>"I went from 2% response rate to 15% after using the AI resume optimizer. Absolute game changer."</p>
-        <div class="testimonial-author">— Marcus Johnson, Product Manager</div>
+      <div class="lp-small-item">
+        <h3><span class="ic">05</span>Two-click connect</h3>
+        <p>Sign in on the dashboard, click Connect. The extension gets a scoped token. No passwords in the browser.</p>
       </div>
-      <div class="testimonial">
-        <p>"The salary negotiation simulator gave me the confidence to ask for $20K more. And I got it."</p>
-        <div class="testimonial-author">— Emma Rodriguez, Marketing Specialist</div>
+      <div class="lp-small-item">
+        <h3><span class="ic">06</span>Multiple resume variants</h3>
+        <p>Swap between a PM-flavored resume and an engineering one on a per-application basis. <em>Premium.</em></p>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="cta-section">
-  <div class="container">
-    <h2>Make Your Next Job Search Your Last One</h2>
-    <p>In a tough job market where volume and quality both matter, Joblook solves the biggest frustrations: wasting hours on irrelevant jobs, repetitive form-filling, losing track of applications, and burning out from administrative overload.</p>
-    <div class="cta-buttons">
-      <a class="cta primary large" href="/signup">Start Free Today</a>
-      <a class="cta secondary large" href="/pricing">Explore Premium Features</a>
-    </div>
-    <p class="cta-note">✓ Start free • ✓ Upgrade when you need more power • ✓ Cancel anytime</p>
-  </div>
-</section>
+  <section class="lp-faq">
+    <div class="kicker">Questions, answered honestly</div>
+    <h2>What people ask before installing.</h2>
+    <details>
+      <summary>Does JobLook submit my applications for me?</summary>
+      <p>No. JobLook fills fields and drafts answers — it never clicks submit. Every application is reviewed and submitted by you. This is a deliberate design choice: silent autosubmission is how people end up applying to the wrong company with the wrong cover letter, and we'd rather be slower and correct.</p>
+    </details>
+    <details>
+      <summary>What happens to my resume and personal data?</summary>
+      <p>Your resume is parsed into a structured profile and stored encrypted at rest with a per-user key. It's used only to fill fields and draft answers to long-form questions. We don't sell it, share it, or train third-party models on it. You can delete your profile from the dashboard at any time, and we'll wipe it within 24 hours.</p>
+    </details>
+    <details>
+      <summary>Which job sites does it work on?</summary>
+      <p>At launch: Greenhouse, Lever, and Ashby. Between them, those three power the majority of postings from mid-size companies, YC startups, and well-funded scale-ups — the employers most people actually want to work for. Workday, Taleo, and LinkedIn Easy Apply are on the roadmap but not available yet.</p>
+    </details>
+    <details>
+      <summary>How does the AI draft a tailored answer?</summary>
+      <p>When you're on a job posting, the extension reads the job description and pulls the relevant details from your profile — the experience, skills, and projects most relevant to what the role is asking for. It drafts an answer in your voice, matched to the question. You review every word before submitting. If the draft isn't right, you edit it or rewrite it. No draft ever leaves your browser unless you click submit.</p>
+    </details>
+    <details>
+      <summary>Can I cancel Premium anytime?</summary>
+      <p>Yes. Month-to-month or annual, cancel from your dashboard with one click. The 14-day free trial doesn't require a card until you decide Premium is worth it. Annual plans can be prorated on request if you cancel mid-term.</p>
+    </details>
+    <details>
+      <summary>Will it get me a job?</summary>
+      <p>No tool gets you a job. What JobLook does is remove the reason people stop applying — the soul-crushing repetition that makes application number twenty feel impossible when you wrote a great answer on application number two. If you're a strong candidate, applying to more of the right roles gets you more shots. That's the math.</p>
+    </details>
+  </section>
+
+  <section class="lp-end">
+    <h2>Stop retyping the same answers across fifty applications.</h2>
+    <p>Add JobLook to Chrome, upload your resume, and apply to the next job in under a minute.</p>
+    <a class="cta primary large chrome" href="{{ chrome_store_url }}">
+      <svg class="chrome-ic" width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="#fff"/><circle cx="24" cy="24" r="8" fill="#4285f4"/><path d="M24 4a20 20 0 0 1 17.32 10H24a10 10 0 0 0-8.66 5L7.68 5.82A19.93 19.93 0 0 1 24 4z" fill="#ea4335"/><path d="M41.32 14A20 20 0 0 1 24 44l8.66-15A10 10 0 0 0 32.66 14z" fill="#fbbc05"/><path d="M24 44A20 20 0 0 1 7.68 5.82L15.34 19A10 10 0 0 0 24 34z" fill="#34a853"/></svg>
+      Add to Chrome — free
+    </a>
+    <div class="meta">free tier · 5 tailored answers/day · no card required</div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const rows = {
+    name: document.querySelector('[data-field="name"] .val'),
+    email: document.querySelector('[data-field="email"] .val'),
+    linkedin: document.querySelector('[data-field="linkedin"] .val'),
+  };
+  const tailor = document.querySelector('[data-field="why"]');
+  const tailorText = tailor?.querySelector('.text');
+  if (!rows.name || !tailor) return;
+
+  const profile = {
+    name: 'Jordan Rivera',
+    email: 'jordan.rivera@gmail.com',
+    linkedin: 'linkedin.com/in/jordanrivera',
+  };
+  const essay = "I've spent the last four years shipping product-facing systems at growth-stage startups — exactly the kind of zero-to-one work Acme is hiring for. Your recent launch around shared workspaces maps closely to the multi-tenant infra I built at my last role, and I'd love to bring that to your team.";
+
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+  function setField(el, value) {
+    el.innerHTML = '';
+    el.textContent = value;
+    el.closest('.lp-row').classList.add('is-filled');
+  }
+  function clearAll() {
+    for (const k in rows) {
+      rows[k].closest('.lp-row').classList.remove('is-filled');
+      rows[k].innerHTML = '<span class="ghost">—</span>';
+    }
+    tailor.classList.remove('is-writing', 'is-done');
+    tailorText.textContent = '';
+  }
+
+  async function type(str, speedMin = 14, speedMax = 38) {
+    for (let i = 0; i < str.length; i++) {
+      tailorText.textContent += str[i];
+      const ch = str[i];
+      const pause = ch === ',' ? 120 : ch === '.' ? 240 : speedMin + Math.random() * (speedMax - speedMin);
+      await sleep(pause);
+    }
+  }
+
+  async function run() {
+    clearAll();
+    await sleep(700);
+    setField(rows.name, profile.name);
+    await sleep(180);
+    setField(rows.email, profile.email);
+    await sleep(180);
+    setField(rows.linkedin, profile.linkedin);
+    await sleep(600);
+    tailor.classList.add('is-writing');
+    await sleep(400);
+    await type(essay);
+    tailor.classList.add('is-done');
+    await sleep(4500);
+    run();
+  }
+
+  if (reduce) {
+    setField(rows.name, profile.name);
+    setField(rows.email, profile.email);
+    setField(rows.linkedin, profile.linkedin);
+    tailor.classList.add('is-writing', 'is-done');
+    tailorText.textContent = essay;
+  } else {
+    run();
+  }
+})();
+
+// Time calculator
+(() => {
+  const apps = document.getElementById('calc-apps');
+  const mins = document.getElementById('calc-min');
+  if (!apps || !mins) return;
+  const JOBLOOK_MIN_PER_APP = 1; // realistic: ~45s fill + ~15s review
+
+  const $apps = document.getElementById('calc-apps-v');
+  const $mins = document.getElementById('calc-min-v');
+  const $saved = document.getElementById('calc-saved');
+  const $year = document.getElementById('calc-year');
+  const $before = document.getElementById('calc-before');
+  const $after = document.getElementById('calc-after');
+
+  function render() {
+    const a = +apps.value, m = +mins.value;
+    const beforeMin = a * m;
+    const afterMin = a * JOBLOOK_MIN_PER_APP;
+    const savedHrsWeek = Math.max(0, (beforeMin - afterMin) / 60);
+    const savedHrsYear = Math.round(savedHrsWeek * 52);
+    $apps.textContent = a;
+    $mins.textContent = m;
+    $saved.textContent = savedHrsWeek.toFixed(1);
+    $year.textContent = savedHrsYear.toLocaleString();
+    $before.textContent = beforeMin;
+    $after.textContent = afterMin;
+  }
+  apps.addEventListener('input', render);
+  mins.addEventListener('input', render);
+  render();
+})();
+</script>
 {% endblock %}

@@ -18,14 +18,14 @@
           <button type="submit" class="linklike">Log out</button>
         </form>
       {% else %}
-        <a href="/product">Product</a>
         <a href="/pricing">Pricing</a>
-        <a href="/blog">Blog</a>
-        <a href="/about">About</a>
-        <a href="/contact">Contact</a>
         <div class="auth-links">
           <a href="/login" class="login-link">Log in</a>
           <a href="/signup" class="signup-btn">Sign up</a>
+          <a href="{{ chrome_store_url | default('#install') }}" class="install-btn">
+            <svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="#fff"/><circle cx="24" cy="24" r="8" fill="#4285f4"/><path d="M24 4a20 20 0 0 1 17.32 10H24a10 10 0 0 0-8.66 5L7.68 5.82A19.93 19.93 0 0 1 24 4z" fill="#ea4335"/><path d="M41.32 14A20 20 0 0 1 24 44l8.66-15A10 10 0 0 0 32.66 14z" fill="#fbbc05"/><path d="M24 44A20 20 0 0 1 7.68 5.82L15.34 19A10 10 0 0 0 24 34z" fill="#34a853"/></svg>
+            Add to Chrome
+          </a>
         </div>
       {% endif %}
     </nav>

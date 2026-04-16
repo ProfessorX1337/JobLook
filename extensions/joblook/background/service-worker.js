@@ -3,6 +3,12 @@
 
 const DEFAULT_API = "http://localhost:8000";
 
+chrome.runtime.onInstalled.addListener(({ reason }) => {
+  if (reason === "install") {
+    chrome.tabs.create({ url: chrome.runtime.getURL("welcome/welcome.html") });
+  }
+});
+
 async function getApiBase() {
   const { api_base } = await chrome.storage.local.get("api_base");
   return api_base || DEFAULT_API;
