@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Users · JobLook Admin</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <style>
+    body { font-family: monospace; background: #0b1220; color: #fafaf7; }
+    .admin-wrap { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+    h1 { color: #fafaf7; font-size: 1.5rem; margin-bottom: 1.5rem; }
+    .nav { display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid #2a3548; padding-bottom: 1rem; }
+    .nav a { color: #888; text-decoration: none; font-size: 0.85rem; }
+    .nav a:hover, .nav a.active { color: #fafaf7; }
+    .section { background: #1a2234; border: 1px solid #2a3548; border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { text-align: left; padding: 0.5rem 0.75rem; color: #888; font-size: 0.7rem; text-transform: uppercase; border-bottom: 1px solid #2a3548; }
+    td { padding: 0.6rem 0.75rem; border-bottom: 1px solid #1e2a3a; }
+    tr:hover td { background: #1e2a3a; }
+    .tier { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+    .tier-free { background: #333; color: #aaa; }
+    .tier-pro { background: #2563eb; color: #fff; }
+    .btn { padding: 0.35rem 0.75rem; border-radius: 5px; font-size: 0.75rem; text-decoration: none; cursor: pointer; border: none; }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-sm { padding: 0.2rem 0.5rem; font-size: 0.7rem; }
+    .search-form { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    .search-form input { background: #0b1220; border: 1px solid #2a3548; color: #fafaf7; padding: 0.4rem 0.75rem; border-radius: 5px; font-size: 0.85rem; flex: 1; }
+    .search-form input::placeholder { color: #555; }
+    .search-form button { background: #2563eb; color: #fff; border: none; padding: 0.4rem 1rem; border-radius: 5px; font-size: 0.8rem; cursor: pointer; }
+    .pagination { display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; color: #888; margin-top: 1rem; }
+    .pagination a { color: #888; text-decoration: none; padding: 0.25rem 0.6rem; border: 1px solid #2a3548; border-radius: 4px; }
+    .pagination a:hover { color: #fafaf7; border-color: #888; }
+  </style>
+</head>
+<body>
+<div class="admin-wrap">
+  <div class="nav">
+    <a href="/admin">Overview</a>
+    <a href="/admin/users" class="active">Users</a>
+  </div>
+
+  <h1>Users ({{ total }})</h1>
+
+  <div class="section">
+    <form method="get" class="search-form">
+      <input type="text" name="q" value="{{ q }}" placeholder="Search by email…">
+      <button type="submit">Search</button>
+      {% if q %}<a href="/admin/users" style="color:#888;text-decoration:none;padding:0.4rem 0.75rem;">Clear</a>{% endif %}
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Tier</th>
+          <th>Stripe</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>{{ u.email }}</td>
+          <td><span class="tier tier-{{ u.tier }}">{{ u.tier }}</span></td>
+          <td>{{ u.stripe_customer_id or '—' }}</td>
+          <td>{{ u.created_at.strftime('%Y-%m-%d') }}</td>
+          <td>
+            <a href="/admin/users/{{ u.id }}" class="btn btn-primary btn-sm">View</a>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" style="color:#666;text-align:center;padding:2rem;">No users found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% if total > per_page %}
+    <div class="pagination">
+      {% if page > 1 %}<a href="?page={{ page - 1 }}{% if q %}&q={{ q }}{% endif %}">← Prev</a>{% endif %}
+      <span>Page {{ page }} of {{ ((total - 1) // per_page) + 1 }}</span>
+      {% if page * per_page < total %}<a href="?page={{ page + 1 }}{% if q %}&q={{ q }}{% endif %}">Next →</a>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+</body>
+</html>

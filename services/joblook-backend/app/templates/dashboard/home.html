@@ -2,12 +2,70 @@
 {% block title %}Dashboard · JobLook{% endblock %}
 {% block body %}
 <section class="dash">
-  <h1>Welcome, {{ profile.identity.first_name or user.email }}</h1>
-  <p>Tier: <strong>{{ user.tier }}</strong></p>
-  <ul class="actions">
-    <li><a href="/app/resume">Upload or replace resume</a></li>
-    <li><a href="/app/profile">Edit profile</a></li>
-    <li><a href="/app/connect-extension">Connect Chrome extension</a></li>
-  </ul>
+  <div class="dash-header">
+    <div>
+      <h1>Welcome{{ profile.identity.first_name or ', ' + profile.identity.first_name }}, {{ profile.identity.first_name or user.email.split('@')[0] }}!</h1>
+      <p class="subtitle">{% if profile.identity.first_name %}Your profile is {{ 'complete' if profile.identity.email and profile.identity.phone else 'incomplete' }}{% else %}Complete your profile to get the most out of JobLook{% endif %}</p>
+    </div>
+    <div class="tier-badge tier-{{ user.tier }}">
+      <span class="tier-label">{{ user.tier | upper }}</span>
+      {% if user.tier == 'free' %}<span class="tier-hint"><a href="/pricing">Upgrade →</a></span>{% endif %}
+    </div>
+  </div>
+
+  {# --- Status Cards --- #}
+  <div class="status-cards">
+    <div class="status-card">
+      <span class="status-icon">📋</span>
+      <div>
+        <span class="status-num">{{ profile.experience | length }}</span>
+        <span class="status-label">Experiences</span>
+      </div>
+    </div>
+    <div class="status-card">
+      <span class="status-icon">🎓</span>
+      <div>
+        <span class="status-num">{{ profile.education | length }}</span>
+        <span class="status-label">Education</span>
+      </div>
+    </div>
+    <div class="status-card">
+      <span class="status-icon">⚡</span>
+      <div>
+        <span class="status-num">{{ profile.skills | length }}</span>
+        <span class="status-label">Skills</span>
+      </div>
+    </div>
+    <div class="status-card">
+      <span class="status-icon">🤖</span>
+      <div>
+        <span class="status-num">{{ llm_calls_month }}</span>
+        <span class="status-label">LLM calls (this month)</span>
+      </div>
+    </div>
+  </div>
+
+  {# --- Quick Actions --- #}
+  <div class="quick-actions">
+    <h2>Quick actions</h2>
+    <ul class="actions">
+      <li><a href="/app/profile" class="action-link">
+        <span class="action-icon">👤</span>
+        <div><strong>Edit profile</strong><small>Update your contact, work history, skills</small></div>
+      </a></li>
+      <li><a href="/app/resume" class="action-link">
+        <span class="action-icon">📄</span>
+        <div><strong>Upload resume</strong><small>Import or update your resume</small></div>
+      </a></li>
+      <li><a href="/app/connect-extension" class="action-link">
+        <span class="action-icon">🔌</span>
+        <div><strong>Connect extension</strong><small>Link your Chrome extension to your account</small></div>
+      </a></li>
+      <li><a href="/app/account" class="action-link">
+        <span class="action-icon">⚙️</span>
+        <div><strong>Account settings</strong><small>Subscription, billing, data export</small></div>
+      </a></li>
+    </ul>
+  </div>
 </section>
 {% endblock %}

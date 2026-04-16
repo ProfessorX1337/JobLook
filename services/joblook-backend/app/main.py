@@ -13,8 +13,12 @@ from .routes import auth as auth_routes
 from .routes import blog as blog_routes
 from .routes import dashboard as dashboard_routes
 from .routes import extension as extension_routes
+from .routes import admin as admin_routes
+
+from .middleware.admin import AdminIPMiddleware
 
 app = FastAPI(title="JobLook")
+app.add_middleware(AdminIPMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
@@ -27,6 +31,7 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
+app.include_router(admin_routes.router)
 app.include_router(auth_routes.router)
 app.include_router(blog_routes.router)
 app.include_router(dashboard_routes.router)

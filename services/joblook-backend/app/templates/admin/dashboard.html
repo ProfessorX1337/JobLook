@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Admin · JobLook</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <style>
+    body { font-family: monospace; background: #0b1220; color: #fafaf7; }
+    .admin-wrap { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+    h1 { color: #fafaf7; font-size: 1.5rem; margin-bottom: 1.5rem; }
+    h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: #888; margin: 1.5rem 0 0.75rem; }
+    .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; }
+    .metric { background: #1a2234; border: 1px solid #2a3548; border-radius: 8px; padding: 1rem; }
+    .metric-label { display: block; font-size: 0.7rem; text-transform: uppercase; color: #666; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+    .metric-value { display: block; font-size: 1.6rem; font-weight: 700; color: #fafaf7; }
+    .metric-value small { font-size: 0.7rem; color: #888; font-weight: 400; }
+    .nav { display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid #2a3548; padding-bottom: 1rem; }
+    .nav a { color: #888; text-decoration: none; font-size: 0.85rem; }
+    .nav a:hover, .nav a.active { color: #fafaf7; }
+    .section { background: #1a2234; border: 1px solid #2a3548; border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; }
+    .section h3 { margin: 0 0 1rem; font-size: 0.9rem; color: #fafaf7; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { text-align: left; padding: 0.5rem 0.75rem; color: #888; font-size: 0.7rem; text-transform: uppercase; border-bottom: 1px solid #2a3548; }
+    td { padding: 0.6rem 0.75rem; border-bottom: 1px solid #1e2a3a; }
+    tr:hover td { background: #1e2a3a; }
+    .tier { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+    .tier-free { background: #333; color: #aaa; }
+    .tier-pro { background: #2563eb; color: #fff; }
+    .btn { padding: 0.35rem 0.75rem; border-radius: 5px; font-size: 0.75rem; text-decoration: none; cursor: pointer; border: none; }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-danger { background: #dc2626; color: #fff; }
+    .btn-sm { padding: 0.2rem 0.5rem; font-size: 0.7rem; }
+    .form-row { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .form-row input { background: #0b1220; border: 1px solid #2a3548; color: #fafaf7; padding: 0.4rem 0.6rem; border-radius: 5px; font-size: 0.85rem; }
+    .form-row input::placeholder { color: #555; }
+    .form-row button { background: #2563eb; color: #fff; border: none; padding: 0.4rem 0.75rem; border-radius: 5px; font-size: 0.8rem; cursor: pointer; }
+  </style>
+</head>
+<body>
+<div class="admin-wrap">
+  <div class="nav">
+    <a href="/admin" class="active">Overview</a>
+    <a href="/admin/users">Users</a>
+  </div>
+
+  <h1>JobLook Admin</h1>
+
+  <h2>System Overview</h2>
+  <div class="metrics">
+    <div class="metric">
+      <span class="metric-label">Total users</span>
+      <span class="metric-value">{{ total_users }}</span>
+    </div>
+    <div class="metric">
+      <span class="metric-label">Signups today</span>
+      <span class="metric-value">{{ signups_today }}</span>
+    </div>
+    <div class="metric">
+      <span class="metric-label">Signups this week</span>
+      <span class="metric-value">{{ signups_week }}</span>
+    </div>
+    <div class="metric">
+      <span class="metric-label">Signups this month</span>
+      <span class="metric-value">{{ signups_month }}</span>
+    </div>
+    <div class="metric">
+      <span class="metric-label">Pro users</span>
+      <span class="metric-value">{{ pro_users }}</span>
+    </div>
+    <div class="metric">
+      <span class="metric-label">LLM spend (MTD)</span>
+      <span class="metric-value">${{ "%.2f" | format(llm_spend_cents / 100) }}</span>
+    </div>
+    <div class="metric">
+      <span class="metric-label">Est. revenue</span>
+      <span class="metric-value">${{ "%.2f" | format(revenue_cents / 100) }}</span>
+    </div>
+  </div>
+
+  <h2>Quick Links</h2>
+  <div class="section">
+    <a href="/admin/users" class="btn btn-primary">Browse all users</a>
+  </div>
+</div>
+</body>
+</html>

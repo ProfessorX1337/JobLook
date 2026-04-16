@@ -2,15 +2,377 @@
 {% block title %}Profile · JobLook{% endblock %}
 {% block body %}
 <section class="dash">
-  <h1>Your profile</h1>
-  <p>Edit the JSON below directly. v2 will replace this with structured forms per section.</p>
-  <form method="post" action="/app/profile">
+  <h1>Your Profile</h1>
+  <p class="subtitle">Update any section and click Save. Your data is encrypted and stored securely.</p>
+
+  <form method="post" action="/app/profile" id="profile-form" onsubmit="return packProfileForm(this);">
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-    <textarea name="profile_json" rows="32" cols="100" spellcheck="false">{{ profile_json }}</textarea>
-    <div class="row">
-      <button type="submit">Save profile</button>
-      <a href="/app/resume">Re-import from resume</a>
+    <input type="hidden" name="profile_json" id="profile-json">
+    <input type="hidden" name="identity_json" id="identity-json">
+    <input type="hidden" name="work_auth_json" id="work-auth-json">
+    <input type="hidden" name="experience_json" id="experience-json">
+    <input type="hidden" name="education_json" id="education-json">
+    <input type="hidden" name="preferences_json" id="preferences-json">
+
+    {# --- Identity Section --- #}
+    <details class="section-card" open>
+      <summary class="section-header">
+        <span class="section-icon">👤</span>
+        <span class="section-title">Contact &amp; Identity</span>
+      </summary>
+      <div class="section-body">
+        <div class="form-row">
+          <label>First name<input name="first_name" value="{{ profile.identity.first_name }}" placeholder="Jane"></label>
+          <label>Last name<input name="last_name" value="{{ profile.identity.last_name }}" placeholder="Doe"></label>
+        </div>
+        <div class="form-row">
+          <label>Preferred name<input name="preferred_name" value="{{ profile.identity.preferred_name }}" placeholder="Jane"></label>
+          <label>Pronouns<input name="pronouns" value="{{ profile.identity.pronouns }}" placeholder="she/her"></label>
+        </div>
+        <div class="form-row">
+          <label>Email<input type="email" name="email" value="{{ profile.identity.email or '' }}" placeholder="jane@example.com"></label>
+          <label>Phone<input name="phone" value="{{ profile.identity.phone }}" placeholder="+1 (555) 000-0000"></label>
+        </div>
+        <div class="form-row">
+          <label>Address<input name="address_line1" value="{{ profile.identity.address_line1 }}" placeholder="123 Main St"></label>
+          <label>Address 2<input name="address_line2" value="{{ profile.identity.address_line2 }}" placeholder="Apt 4B"></label>
+        </div>
+        <div class="form-row">
+          <label>City<input name="city" value="{{ profile.identity.city }}" placeholder="San Francisco"></label>
+          <label>State<input name="state" value="{{ profile.identity.state }}" placeholder="CA"></label>
+        </div>
+        <div class="form-row">
+          <label>Postal code<input name="postal_code" value="{{ profile.identity.postal_code }}" placeholder="94105"></label>
+          <label>Country<input name="country" value="{{ profile.identity.country }}" placeholder="United States"></label>
+        </div>
+        <div class="form-row">
+          <label>LinkedIn URL<input name="linkedin_url" type="url" value="{{ profile.identity.linkedin_url or '' }}" placeholder="https://linkedin.com/in/janedoe"></label>
+          <label>GitHub URL<input name="github_url" type="url" value="{{ profile.identity.github_url or '' }}" placeholder="https://github.com/janedoe"></label>
+        </div>
+        <div class="form-row">
+          <label class="full">Portfolio URL<input name="portfolio_url" type="url" value="{{ profile.identity.portfolio_url or '' }}" placeholder="https://janedoe.com"></label>
+        </div>
+      </div>
+    </details>
+
+    {# --- Work Authorization Section --- #}
+    <details class="section-card">
+      <summary class="section-header">
+        <span class="section-icon">💼</span>
+        <span class="section-title">Work Authorization</span>
+      </summary>
+      <div class="section-body">
+        <div class="toggle-row">
+          <label class="toggle">
+            <input type="checkbox" name="us_work_authorized" value="true" {% if profile.work_authorization.us_work_authorized %}checked{% endif %}>
+            <span>US work authorized</span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" name="requires_sponsorship_now" value="true" {% if profile.work_authorization.requires_sponsorship_now %}checked{% endif %}>
+            <span>Requires sponsorship now</span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" name="requires_sponsorship_future" value="true" {% if profile.work_authorization.requires_sponsorship_future %}checked{% endif %}>
+            <span>May require sponsorship in future</span>
+          </label>
+        </div>
+        <div class="form-row">
+          <label class="full">Visa status<input name="visa_status" value="{{ profile.work_authorization.visa_status }}" placeholder="H-1B, L-2, etc."></label>
+        </div>
+        <div class="form-row">
+          <label class="full">Citizenships (comma-separated)<input name="citizenships" value="{{ profile.work_authorization.citizenships | join(', ') }}" placeholder="United States, Canada"></label>
+        </div>
+      </div>
+    </details>
+
+    {# --- Experience Section --- #}
+    <details class="section-card">
+      <summary class="section-header">
+        <span class="section-icon">🏢</span>
+        <span class="section-title">Work Experience</span>
+      </summary>
+      <div class="section-body" id="experience-list">
+        {% for exp in profile.experience %}
+        <div class="repeatable-item" data-index="{{ loop.index0 }}">
+          <div class="item-header">
+            <span>Position {{ loop.index }}</span>
+            <button type="button" class="btn-remove" onclick="removeItem(this)">Remove</button>
+          </div>
+          <div class="form-row">
+            <label>Company<input name="exp_company_{{ loop.index0 }}" value="{{ exp.company }}" placeholder="Acme Corp"></label>
+            <label>Title<input name="exp_title_{{ loop.index0 }}" value="{{ exp.title }}" placeholder="Software Engineer"></label>
+          </div>
+          <div class="form-row">
+            <label>Location<input name="exp_location_{{ loop.index0 }}" value="{{ exp.location }}" placeholder="San Francisco, CA"></label>
+            <label class="toggle" style="justify-content:flex-start;gap:0.5rem">
+              <input type="checkbox" name="exp_current_{{ loop.index0 }}" value="true" {% if exp.is_current %}checked{% endif %}>
+              <span>Current position</span>
+            </label>
+          </div>
+          <div class="form-row">
+            <label>Start date<input name="exp_start_date_{{ loop.index0 }}" type="date" value="{{ exp.start_date or '' }}"></label>
+            <label>End date<input name="exp_end_date_{{ loop.index0 }}" type="date" value="{{ exp.end_date or '' }}" {% if exp.is_current %}disabled{% endif %}></label>
+          </div>
+          <div class="form-row">
+            <label class="full">Summary<textarea name="exp_summary_{{ loop.index0 }}" rows="3" placeholder="Brief description...">{{ exp.summary }}</textarea></label>
+          </div>
+          <div class="form-row">
+            <label class="full">Bullets (one per line)<textarea name="exp_bullets_{{ loop.index0 }}" rows="4" placeholder="• Led development of...\n• Reduced latency by...">{{ exp.bullets | join('\n') }}</textarea></label>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="section-footer">
+        <input type="hidden" id="experience-count" name="experience_count" value="{{ profile.experience | length }}">
+        <button type="button" class="btn-add" onclick="addExperience()">+ Add position</button>
+      </div>
+    </details>
+
+    {# --- Education Section --- #}
+    <details class="section-card">
+      <summary class="section-header">
+        <span class="section-icon">🎓</span>
+        <span class="section-title">Education</span>
+      </summary>
+      <div class="section-body" id="education-list">
+        {% for edu in profile.education %}
+        <div class="repeatable-item" data-index="{{ loop.index0 }}">
+          <div class="item-header">
+            <span>Education {{ loop.index }}</span>
+            <button type="button" class="btn-remove" onclick="removeItem(this)">Remove</button>
+          </div>
+          <div class="form-row">
+            <label>School<input name="edu_school_{{ loop.index0 }}" value="{{ edu.school }}" placeholder="MIT"></label>
+            <label>Degree<input name="edu_degree_{{ loop.index0 }}" value="{{ edu.degree }}" placeholder="Bachelor of Science"></label>
+          </div>
+          <div class="form-row">
+            <label>Field of study<input name="edu_field_{{ loop.index0 }}" value="{{ edu.field_of_study }}" placeholder="Computer Science"></label>
+            <label>GPA<input name="edu_gpa_{{ loop.index0 }}" type="number" step="0.01" min="0" max="4" value="{{ edu.gpa or '' }}" placeholder="3.8"></label>
+          </div>
+          <div class="form-row">
+            <label>Start date<input name="edu_start_date_{{ loop.index0 }}" type="date" value="{{ edu.start_date or '' }}"></label>
+            <label>End date<input name="edu_end_date_{{ loop.index0 }}" type="date" value="{{ edu.end_date or '' }}"></label>
+          </div>
+          <div class="form-row">
+            <label class="full">Honors<input name="edu_honors_{{ loop.index0 }}" value="{{ edu.honors }}" placeholder="Magna cum laude, Dean's List"></label>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="section-footer">
+        <input type="hidden" id="education-count" name="education_count" value="{{ profile.education | length }}">
+        <button type="button" class="btn-add" onclick="addEducation()">+ Add education</button>
+      </div>
+    </details>
+
+    {# --- Skills Section --- #}
+    <details class="section-card">
+      <summary class="section-header">
+        <span class="section-icon">⚡</span>
+        <span class="section-title">Skills</span>
+      </summary>
+      <div class="section-body">
+        <div class="form-row">
+          <label class="full">Skills (comma-separated tags)<input name="skills_raw" id="skills-input" value="{{ profile.skills | map(attribute='name') | join(', ') }}" placeholder="Python, TypeScript, React, PostgreSQL"></label>
+        </div>
+        <div class="skills-preview" id="skills-preview">
+          {% for skill in profile.skills %}
+          <span class="skill-tag">{{ skill.name }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </details>
+
+    {# --- Preferences Section --- #}
+    <details class="section-card">
+      <summary class="section-header">
+        <span class="section-icon">🎯</span>
+        <span class="section-title">Job Preferences</span>
+      </summary>
+      <div class="section-body">
+        <div class="form-row">
+          <label class="full">Desired titles (comma-separated)<input name="desired_titles" value="{{ profile.preferences.desired_titles | join(', ') }}" placeholder="Software Engineer, Senior Developer"></label>
+        </div>
+        <div class="form-row">
+          <label class="full">Desired locations (comma-separated)<input name="desired_locations" value="{{ profile.preferences.desired_locations | join(', ') }}" placeholder="San Francisco, New York, Remote"></label>
+        </div>
+        <div class="form-row">
+          <label>Remote preference
+            <select name="remote_preference">
+              <option value="">Any</option>
+              <option value="remote" {% if profile.preferences.remote_preference == 'remote' %}selected{% endif %}>Remote</option>
+              <option value="hybrid" {% if profile.preferences.remote_preference == 'hybrid' %}selected{% endif %}>Hybrid</option>
+              <option value="onsite" {% if profile.preferences.remote_preference == 'onsite' %}selected{% endif %}>Onsite</option>
+            </select>
+          </label>
+          <label class="toggle" style="justify-content:flex-start;gap:0.5rem">
+            <input type="checkbox" name="willing_to_relocate" value="true" {% if profile.preferences.willing_to_relocate %}checked{% endif %}>
+            <span>Willing to relocate</span>
+          </label>
+        </div>
+        <div class="form-row">
+          <label>Min salary (USD)<input name="min_salary_usd" type="number" value="{{ profile.preferences.min_salary_usd or '' }}" placeholder="120000"></label>
+          <label>Notice period (weeks)<input name="notice_period_weeks" type="number" value="{{ profile.preferences.notice_period_weeks or '' }}" placeholder="2"></label>
+        </div>
+      </div>
+    </details>
+
+    {# --- Summary Section --- #}
+    <details class="section-card">
+      <summary class="section-header">
+        <span class="section-icon">📝</span>
+        <span class="section-title">Summary / Bio</span>
+      </summary>
+      <div class="section-body">
+        <div class="form-row">
+          <label class="full">Professional summary<textarea name="summary" rows="6" placeholder="A brief summary of your background, skills, and what you're looking for...">{{ profile.summary }}</textarea></label>
+        </div>
+      </div>
+    </details>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-save">Save profile</button>
+      <a href="/app/resume" class="btn-secondary">Re-import from resume</a>
     </div>
   </form>
 </section>
+
+<script>
+// Re-render skills preview as tags
+document.getElementById('skills-input').addEventListener('input', function() {
+  var preview = document.getElementById('skills-preview');
+  var skills = this.value.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+  preview.innerHTML = skills.map(function(s) { return '<span class="skill-tag">' + s + '</span>'; }).join('');
+});
+
+// Sync current checkbox with end_date disabled state
+document.querySelectorAll('input[name^="exp_current_"]').forEach(function(cb) {
+  cb.addEventListener('change', function() {
+    var idx = this.name.split('_')[2];
+    var endDate = document.querySelector('input[name="exp_end_date_' + idx + '"]');
+    if (endDate) endDate.disabled = this.checked;
+  });
+});
+
+var expCount = {{ profile.experience | length }};
+var eduCount = {{ profile.education | length }};
+
+function addExperience() {
+  var list = document.getElementById('experience-list');
+  var idx = expCount++;
+  document.getElementById('experience-count').value = expCount;
+  list.insertAdjacentHTML('beforeend', '<div class="repeatable-item" data-index="' + idx + '">' +
+    '<div class="item-header"><span>Position ' + expCount + '</span><button type="button" class="btn-remove" onclick="removeItem(this)">Remove</button></div>' +
+    '<div class="form-row"><label>Company<input name="exp_company_' + idx + '" placeholder="Acme Corp"></label><label>Title<input name="exp_title_' + idx + '" placeholder="Software Engineer"></label></div>' +
+    '<div class="form-row"><label>Location<input name="exp_location_' + idx + '" placeholder="San Francisco, CA"></label><label class="toggle" style="justify-content:flex-start;gap:0.5rem"><input type="checkbox" name="exp_current_' + idx + '" value="true"><span>Current</span></label></div>' +
+    '<div class="form-row"><label>Start date<input name="exp_start_date_' + idx + '" type="date"></label><label>End date<input name="exp_end_date_' + idx + '" type="date"></label></div>' +
+    '<div class="form-row"><label class="full">Summary<textarea name="exp_summary_' + idx + '" rows="3"></textarea></label></div>' +
+    '<div class="form-row"><label class="full">Bullets (one per line)<textarea name="exp_bullets_' + idx + '" rows="4" placeholder="• Led development of..."></textarea></label></div>' +
+    '</div>');
+}
+
+function addEducation() {
+  var list = document.getElementById('education-list');
+  var idx = eduCount++;
+  document.getElementById('education-count').value = eduCount;
+  list.insertAdjacentHTML('beforeend', '<div class="repeatable-item" data-index="' + idx + '">' +
+    '<div class="item-header"><span>Education ' + eduCount + '</span><button type="button" class="btn-remove" onclick="removeItem(this)">Remove</button></div>' +
+    '<div class="form-row"><label>School<input name="edu_school_' + idx + '" placeholder="MIT"></label><label>Degree<input name="edu_degree_' + idx + '" placeholder="Bachelor of Science"></label></div>' +
+    '<div class="form-row"><label>Field<input name="edu_field_' + idx + '" placeholder="Computer Science"></label><label>GPA<input name="edu_gpa_' + idx + '" type="number" step="0.01" min="0" max="4" placeholder="3.8"></label></div>' +
+    '<div class="form-row"><label>Start date<input name="edu_start_date_' + idx + '" type="date"></label><label>End date<input name="edu_end_date_' + idx + '" type="date"></label></div>' +
+    '<div class="form-row"><label class="full">Honors<input name="edu_honors_' + idx + '" placeholder="Magna cum laude"></label></div>' +
+    '</div>');
+}
+
+function removeItem(btn) {
+  btn.closest('.repeatable-item').remove();
+}
+
+function getFieldVal(name) {
+  var el = document.querySelector('[name="' + name + '"]');
+  return el ? el.value.trim() : '';
+}
+
+function getChecked(name) {
+  var el = document.querySelector('[name="' + name + '"]');
+  return el ? el.checked : false;
+}
+
+function packProfileForm(form) {
+  document.getElementById('identity-json').value = JSON.stringify({
+    first_name: getFieldVal('first_name'),
+    last_name: getFieldVal('last_name'),
+    preferred_name: getFieldVal('preferred_name'),
+    pronouns: getFieldVal('pronouns'),
+    email: getFieldVal('email') || null,
+    phone: getFieldVal('phone'),
+    address_line1: getFieldVal('address_line1'),
+    address_line2: getFieldVal('address_line2'),
+    city: getFieldVal('city'),
+    state: getFieldVal('state'),
+    postal_code: getFieldVal('postal_code'),
+    country: getFieldVal('country'),
+    linkedin_url: getFieldVal('linkedin_url') || null,
+    github_url: getFieldVal('github_url') || null,
+    portfolio_url: getFieldVal('portfolio_url') || null,
+  });
+
+  var citizenships = getFieldVal('citizenships');
+  document.getElementById('work-auth-json').value = JSON.stringify({
+    us_work_authorized: getChecked('us_work_authorized') ? true : null,
+    requires_sponsorship_now: getChecked('requires_sponsorship_now') ? true : null,
+    requires_sponsorship_future: getChecked('requires_sponsorship_future') ? true : null,
+    visa_status: getFieldVal('visa_status'),
+    citizenships: citizenships ? citizenships.split(',').map(function(s) { return s.trim(); }).filter(Boolean) : [],
+  });
+
+  var expItems = document.querySelectorAll('#experience-list .repeatable-item');
+  var experiences = [];
+  expItems.forEach(function(item) {
+    var idx = item.dataset.index;
+    var bulletsRaw = getFieldVal('exp_bullets_' + idx);
+    experiences.push({
+      company: getFieldVal('exp_company_' + idx),
+      title: getFieldVal('exp_title_' + idx),
+      location: getFieldVal('exp_location_' + idx),
+      is_current: getChecked('exp_current_' + idx),
+      start_date: getFieldVal('exp_start_date_' + idx) || null,
+      end_date: getFieldVal('exp_end_date_' + idx) || null,
+      summary: getFieldVal('exp_summary_' + idx),
+      bullets: bulletsRaw ? bulletsRaw.split('\n').map(function(s) { return s.replace(/^[\-\*]\s*/, '').trim(); }).filter(Boolean) : [],
+    });
+  });
+  document.getElementById('experience-json').value = JSON.stringify(experiences);
+
+  var eduItems = document.querySelectorAll('#education-list .repeatable-item');
+  var educations = [];
+  eduItems.forEach(function(item) {
+    var idx = item.dataset.index;
+    educations.push({
+      school: getFieldVal('edu_school_' + idx),
+      degree: getFieldVal('edu_degree_' + idx),
+      field_of_study: getFieldVal('edu_field_' + idx),
+      gpa: parseFloat(getFieldVal('edu_gpa_' + idx)) || null,
+      start_date: getFieldVal('edu_start_date_' + idx) || null,
+      end_date: getFieldVal('edu_end_date_' + idx) || null,
+      honors: getFieldVal('edu_honors_' + idx),
+    });
+  });
+  document.getElementById('education-json').value = JSON.stringify(educations);
+
+  var desiredTitles = getFieldVal('desired_titles');
+  var desiredLocs = getFieldVal('desired_locations');
+  document.getElementById('preferences-json').value = JSON.stringify({
+    desired_titles: desiredTitles ? desiredTitles.split(',').map(function(s) { return s.trim(); }).filter(Boolean) : [],
+    desired_locations: desiredLocs ? desiredLocs.split(',').map(function(s) { return s.trim(); }).filter(Boolean) : [],
+    remote_preference: getFieldVal('remote_preference') || null,
+    willing_to_relocate: getChecked('willing_to_relocate') ? true : null,
+    min_salary_usd: parseInt(getFieldVal('min_salary_usd')) || null,
+    notice_period_weeks: parseInt(getFieldVal('notice_period_weeks')) || null,
+    earliest_start_date: null,
+  });
+
+  return true;
+}
+</script>
 {% endblock %}

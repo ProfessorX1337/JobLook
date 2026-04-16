@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ user.email }} · JobLook Admin</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <style>
+    body { font-family: monospace; background: #0b1220; color: #fafaf7; }
+    .admin-wrap { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+    h1 { color: #fafaf7; font-size: 1.3rem; margin-bottom: 0.25rem; }
+    .sub { color: #666; font-size: 0.8rem; margin-bottom: 1.5rem; }
+    .back { color: #888; text-decoration: none; font-size: 0.8rem; }
+    .back:hover { color: #fafaf7; }
+    .nav { display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid #2a3548; padding-bottom: 1rem; }
+    .nav a { color: #888; text-decoration: none; font-size: 0.85rem; }
+    .nav a:hover, .nav a.active { color: #fafaf7; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .card { background: #1a2234; border: 1px solid #2a3548; border-radius: 10px; padding: 1.25rem; }
+    .card h3 { margin: 0 0 1rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: #888; }
+    .field { display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid #1e2a3a; font-size: 0.82rem; }
+    .field:last-child { border-bottom: none; }
+    .field-label { color: #888; }
+    .field-value { color: #fafaf7; text-align: right; word-break: break-all; max-width: 55%; }
+    .tier { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
+    .tier-free { background: #333; color: #aaa; }
+    .tier-pro { background: #2563eb; color: #fff; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    th { text-align: left; padding: 0.5rem 0.75rem; color: #888; font-size: 0.7rem; text-transform: uppercase; border-bottom: 1px solid #2a3548; }
+    td { padding: 0.5rem 0.75rem; border-bottom: 1px solid #1e2a3a; }
+    tr:hover td { background: #1e2a3a; }
+    .section { background: #1a2234; border: 1px solid #2a3548; border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; }
+    .form-row { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem; }
+    .form-row label { font-size: 0.8rem; color: #888; }
+    .form-row select, .form-row input { background: #0b1220; border: 1px solid #2a3548; color: #fafaf7; padding: 0.4rem 0.6rem; border-radius: 5px; font-size: 0.82rem; }
+    .form-row input { flex: 1; }
+    .form-row button { background: #2563eb; color: #fff; border: none; padding: 0.4rem 0.75rem; border-radius: 5px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; }
+    .btn-danger { background: #dc2626; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 5px; font-size: 0.8rem; cursor: pointer; }
+    .btn-danger:hover { background: #b91c1c; }
+    .success { background: #064e3b; color: #6ee7b7; padding: 0.5rem 1rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.85rem; }
+    .error { background: #7f1d1d; color: #fca5a5; padding: 0.5rem 1rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.85rem; }
+    .profile-section { margin-bottom: 1rem; }
+    .profile-section h4 { font-size: 0.85rem; color: #fafaf7; margin: 0.75rem 0 0.4rem; border-bottom: 1px solid #2a3548; padding-bottom: 0.25rem; }
+    .profile-row { display: flex; gap: 0.5rem; font-size: 0.8rem; padding: 0.25rem 0; }
+    .profile-row .lbl { color: #888; min-width: 120px; }
+    .profile-row .val { color: #fafaf7; }
+  </style>
+</head>
+<body>
+<div class="admin-wrap">
+  <a href="/admin/users" class="back">← Back to users</a>
+  <div class="nav">
+    <a href="/admin">Overview</a>
+    <a href="/admin/users">Users</a>
+    <a href="/admin/users/{{ user.id }}" class="active">{{ user.email }}</a>
+  </div>
+
+  <h1>{{ user.email }}</h1>
+  <p class="sub">Joined {{ user.created_at.strftime('%Y-%m-%d') }} · ID: {{ user.id }}</p>
+
+  {# Tier override form #}
+  <div class="section">
+    <h3 style="margin-top:0">Tier Override</h3>
+    <div id="msg-box"></div>
+    <form method="post" action="/admin/tier-override" id="tier-form" onsubmit="return submitTier(this)">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="user_id" value="{{ user.id }}">
+      <div class="form-row">
+        <label>Set tier:</label>
+        <select name="new_tier" id="new_tier_select">
+          <option value="free" {% if user.tier == 'free' %}selected{% endif %}>free</option>
+          <option value="pro" {% if user.tier == 'pro' %}selected{% endif %}>pro</option>
+        </select>
+        <input type="text" name="reason" id="tier-reason" placeholder="Reason (required)" required>
+        <button type="submit">Apply</button>
+      </div>
+    </form>
+    <p style="font-size:0.75rem;color:#666;margin-top:0.5rem;">Current tier: <strong>{{ user.tier }}</strong></p>
+  </div>
+
+  {# Account actions #}
+  <div class="section">
+    <h3 style="margin-top:0">Account Actions</h3>
+    <form method="post" action="/admin/users/{{ user.id }}/disable" onsubmit="return confirm('Delete this user and all their data? This cannot be undone.');">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button type="submit" class="btn-danger">Delete user</button>
+    </form>
+  </div>
+
+  {# User info #}
+  <div class="grid">
+    <div class="card">
+      <h3>Account</h3>
+      <div class="field"><span class="field-label">User ID</span><span class="field-value">{{ user.id }}</span></div>
+      <div class="field"><span class="field-label">Email</span><span class="field-value">{{ user.email }}</span></div>
+      <div class="field"><span class="field-label">Tier</span><span class="field-value"><span class="tier tier-{{ user.tier }}">{{ user.tier }}</span></span></div>
+      <div class="field"><span class="field-label">Stripe customer</span><span class="field-value">{{ user.stripe_customer_id or '—' }}</span></div>
+      <div class="field"><span class="field-label">Created</span><span class="field-value">{{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</span></div>
+    </div>
+    <div class="card">
+      <h3>Subscription</h3>
+      {% if subscription %}
+      <div class="field"><span class="field-label">Status</span><span class="field-value">{{ subscription.status }}</span></div>
+      <div class="field"><span class="field-label">Period ends</span><span class="field-value">{{ subscription.current_period_end.strftime('%Y-%m-%d') if subscription.current_period_end else '—' }}</span></div>
+      <div class="field"><span class="field-label">Stripe sub ID</span><span class="field-value" style="font-size:0.7rem;">{{ subscription.stripe_subscription_id }}</span></div>
+      {% else %}
+      <p style="color:#666;font-size:0.82rem;">No active subscription.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  {# Profile #}
+  <div class="section">
+    <h3 style="margin-top:0">Profile</h3>
+    <div class="profile-section">
+      <h4>Identity</h4>
+      <div class="profile-row"><span class="lbl">Name</span><span class="val">{{ profile.identity.first_name }} {{ profile.identity.last_name }}</span></div>
+      <div class="profile-row"><span class="lbl">Email</span><span class="val">{{ profile.identity.email or '—' }}</span></div>
+      <div class="profile-row"><span class="lbl">Phone</span><span class="val">{{ profile.identity.phone or '—' }}</span></div>
+      <div class="profile-row"><span class="lbl">Location</span><span class="val">{{ [profile.identity.city, profile.identity.state, profile.identity.country] | select | join(', ') or '—' }}</span></div>
+      <div class="profile-row"><span class="lbl">LinkedIn</span><span class="val">{{ profile.identity.linkedin_url or '—' }}</span></div>
+      <div class="profile-row"><span class="lbl">GitHub</span><span class="val">{{ profile.identity.github_url or '—' }}</span></div>
+    </div>
+    <div class="profile-section">
+      <h4>Work</h4>
+      {% for exp in profile.experience %}
+      <div class="profile-row"><span class="lbl">{{ exp.title }}</span><span class="val">{{ exp.company }}{% if exp.location %}, {{ exp.location }}{% endif %}</span></div>
+      {% else %}
+      <div class="profile-row"><span class="lbl" style="color:#555;">No experience entries</span></div>
+      {% endfor %}
+    </div>
+    <div class="profile-section">
+      <h4>Education</h4>
+      {% for edu in profile.education %}
+      <div class="profile-row"><span class="lbl">{{ edu.school }}</span><span class="val">{{ edu.degree }}{% if edu.field_of_study %} in {{ edu.field_of_study }}{% endif %}</span></div>
+      {% else %}
+      <div class="profile-row"><span class="lbl" style="color:#555;">No education entries</span></div>
+      {% endfor %}
+    </div>
+    <div class="profile-section">
+      <h4>Skills ({{ profile.skills | length }})</h4>
+      <div style="display:flex;flex-wrap:wrap;gap:0.3rem;">
+        {% for skill in profile.skills %}
+        <span style="background:#2563eb;color:#fff;padding:0.15rem 0.5rem;border-radius:100px;font-size:0.75rem;">{{ skill.name }}</span>
+        {% else %}
+        <span style="color:#555;font-size:0.82rem;">No skills listed</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  {# LLM cost history #}
+  <div class="section">
+    <h3 style="margin-top:0">LLM Cost History ({{ cost_rows | length }} recent · total ${{ "%.2f" | format(total_cost_cents / 100) }})</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Endpoint</th>
+          <th>Model</th>
+          <th>In</th>
+          <th>Out</th>
+          <th>Cache read</th>
+          <th>Cost</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in cost_rows %}
+        <tr>
+          <td>{{ row.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td>{{ row.endpoint }}</td>
+          <td style="color:#888;font-size:0.75rem;">{{ row.model }}</td>
+          <td>{{ row.input_tokens }}</td>
+          <td>{{ row.output_tokens }}</td>
+          <td>{{ row.cache_read_tokens }}</td>
+          <td>${{ "%.4f" | format(row.cost_cents / 100) }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" style="color:#666;text-align:center;padding:1rem;">No LLM calls yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+function submitTier(form) {
+  var reason = document.getElementById('tier-reason').value.trim();
+  if (!reason) { alert('A reason is required.'); return false; }
+  var formData = new FormData(form);
+  fetch('/admin/tier-override', { method: 'POST', body: formData })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var box = document.getElementById('msg-box');
+      if (data.ok) {
+        box.innerHTML = '<div class="success">Tier changed from ' + data.old_tier + ' → ' + data.new_tier + '. Reason: ' + data.reason + '</div>';
+      } else {
+        box.innerHTML = '<div class="error">Error: ' + (data.detail || 'Unknown error') + '</div>';
+      }
+    })
+    .catch(function() {
+      document.getElementById('msg-box').innerHTML = '<div class="error">Request failed.</div>';
+    });
+  return false;
+}
+</script>
+</body>
+</html>

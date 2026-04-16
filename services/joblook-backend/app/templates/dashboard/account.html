@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Account · JobLook{% endblock %}
+{% block body %}
+<section class="dash">
+  <h1>Account Settings</h1>
+
+  {# --- Subscription & Billing --- #}
+  <details class="section-card" open>
+    <summary class="section-header">
+      <span class="section-icon">💳</span>
+      <span class="section-title">Subscription & Billing</span>
+    </summary>
+    <div class="section-body">
+      <div class="stat-row">
+        <div class="stat-box">
+          <span class="stat-label">Current tier</span>
+          <span class="stat-value tier-{{ user.tier }}">{{ user.tier | upper }}</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Member since</span>
+          <span class="stat-value">{{ user.created_at.strftime('%b %d, %Y') }}</span>
+        </div>
+      </div>
+      <p class="help-text">Manage your subscription, update payment method, or cancel anytime via the Stripe billing portal.</p>
+      {% if user.stripe_customer_id %}
+      <a href="/app/billing" class="btn-secondary">Open billing portal</a>
+      {% else %}
+      <p class="help-text">No billing account linked. Visit <a href="/pricing">/pricing</a> to upgrade.</p>
+      {% endif %}
+    </div>
+  </details>
+
+  {# --- Usage Stats --- #}
+  <details class="section-card">
+    <summary class="section-header">
+      <span class="section-icon">📊</span>
+      <span class="section-title">Usage This Month</span>
+    </summary>
+    <div class="section-body">
+      <div class="stat-row">
+        <div class="stat-box">
+          <span class="stat-label">LLM calls</span>
+          <span class="stat-value">{{ llm_calls_month }}</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">LLM cost</span>
+          <span class="stat-value">${{ "%.2f" | format(total_cost_month_cents / 100) }}</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Free tier limit</span>
+          <span class="stat-value">5 calls/day</span>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  {# --- Data Export --- #}
+  <details class="section-card">
+    <summary class="section-header">
+      <span class="section-icon">📤</span>
+      <span class="section-title">Export Your Data</span>
+    </summary>
+    <div class="section-body">
+      <p class="help-text">Download a JSON copy of your profile and account data. Includes all fields, work history, education, and skills.</p>
+      <a href="/app/account/export" class="btn-secondary">Download my data (JSON)</a>
+    </div>
+  </details>
+
+  {# --- Danger Zone --- #}
+  <details class="section-card danger">
+    <summary class="section-header">
+      <span class="section-icon">⚠️</span>
+      <span class="section-title">Danger Zone</span>
+    </summary>
+    <div class="section-body">
+      <p class="help-text danger-text">Deleting your account is permanent. All your profile data, saved answers, and usage history will be permanently removed. This cannot be undone.</p>
+      <form method="post" action="/app/account/delete" onsubmit="return confirm('Are you absolutely sure? This will permanently delete your account and all data.');">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <div class="form-row">
+          <label class="full">Type your email to confirm: <strong>{{ user.email }}</strong>
+            <input type="email" name="confirm_email" placeholder="{{ user.email }}" autocomplete="off">
+          </label>
+        </div>
+        <button type="submit" class="btn-danger">Permanently delete my account</button>
+      </form>
+    </div>
+  </details>
+</section>
+{% endblock %}
