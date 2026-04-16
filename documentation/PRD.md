@@ -100,25 +100,21 @@ Each milestone is a checkpoint where the product should be demo-able end-to-end 
 
 **Exit criteria:** I can sign up, upload my resume, fix any parse errors, and save. `SELECT profile_encrypted FROM users` returns encrypted bytes.
 
-### M1.1 — Admin panels
-**Goal:** User self-service dashboard + super-admin system management.
-
-#### M1.1a — User admin panel
-- [ ] Profile editor with per-section forms (upgrade from JSON textarea)
-- [ ] Subscription status + tier display
-- [ ] Usage stats (autofill count today, LLM calls this month)
-- [ ] Billing portal link (Stripe customer portal)
-- [ ] Data export + account deletion
+### M1.1a — User admin panel ✅
+- [x] Per-section collapsible profile forms (identity, work auth, experience, education, skills, preferences, summary)
+- [x] Experience/education: add/remove items dynamically; skills as comma-separated tags with live preview
+- [x] Dashboard home: tier badge, status cards (experiences, education, skills, LLM calls MTD)
+- [x] Account page: subscription status, usage stats, data export (JSON download), danger zone with account deletion
+- [x] New routes: `/app/account`, `/app/account/export`, `/app/account/delete`
 
 **Exit criteria:** User can manage their entire account from `/app/dashboard` without touching raw JSON.
 
-#### M1.1b — Super admin panel
-- [ ] IP-allowlisted `/admin` route (middleware guard)
-- [ ] User list + search (email, signup date, tier, status)
-- [ ] Per-user: view profile, override tier, disable account
-- [ ] Stripe paywall overrides (grant free Pro, revoke trial, etc.)
-- [ ] System-wide usage metrics (total users, DAU, LLM spend MTD, revenue)
-- [ ] Basic error log viewer (last 100 errors)
+### M1.1b — Super admin panel ✅
+- [x] AdminIPMiddleware: IP allowlist via `ALLOWED_ADMIN_IPS` env var (blocks all `/admin` when not set)
+- [x] `/admin` — system overview: total users, signups (today/week/month), pro count, LLM spend MTD, estimated revenue
+- [x] `/admin/users` — paginated user list with email search
+- [x] `/admin/users/{id}` — full user detail: decrypted profile, subscription, tier override form, LLM cost history
+- [x] `/admin/tier-override POST` — change tier with mandatory reason field; `/admin/users/{id}/disable POST` — delete user
 
 **Exit criteria:** Admin can manage any user account and see system health from `/admin`.
 
@@ -136,10 +132,12 @@ Each milestone is a checkpoint where the product should be demo-able end-to-end 
 
 **Exit criteria:** On a real Greenhouse posting, clicking Fill populates 90% of standard fields correctly. Zero backend calls.
 
-### M3 — Backend `/autofill` heuristic
-- [ ] `/api/extension/autofill` endpoint (JWT auth)
-- [ ] Accept list of unknown questions + JD; return per-question answer candidates
-- [ ] For now, return `null` for anything not heuristically derivable — no LLM yet
+### M3 — Backend `/autofill` heuristic ✅
+- [x] `/api/extension/autofill` POST endpoint (JWT auth)
+- [x] Accepts list of questions + job context hash; returns per-question answer + source + confidence
+- [x] Question classifier: PROFILE (direct lookup), HEURISTIC (pattern match), LLM (returns null)
+- [x] Profile lookup for PROFILE-classified questions; heuristic for EEOC decline-to-self-identify and yes/no
+- [x] All resolved answers saved to `custom_answers` cache with source attribution
 
 **Exit criteria:** Extension posts questions, receives structured responses, fills known ones, leaves unknowns blank.
 
@@ -147,13 +145,9 @@ Each milestone is a checkpoint where the product should be demo-able end-to-end 
 - [ ] Prompt design (system prompt + cached profile + user question + JD context)
 - [ ] Prompt caching via `cache_control` on the frozen system + profile prefix
 - [ ] `custom_answers` hash cache lookup before LLM call (keyed by `question_hash` + `job_context_hash`)
-- [ ] Cost logging row per LLM call
-- [ ] Write answer back to `custom_answers` on save
-- [ ] Question classifier (cheap pattern match for "easy" fields — salary, notice period, start date — vs "hard" cover-letter style needing LLM)
+- [ ] Cost logging row per LLM call; write answer back to `custom_answers` on save
 
 **Exit criteria:** Long-form answer arrives in < 8s, costs < $0.02, second identical question hits cache with zero LLM spend. Question classifier routes to cache/LLM appropriately.
-
-**Exit criteria:** Long-form answer arrives in < 8s, costs < $0.02, second identical question hits cache with zero LLM spend.
 
 ### M5 — Lever + Ashby adapters
 - [ ] Lever adapter + its JD scraper
