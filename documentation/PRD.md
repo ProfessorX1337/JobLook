@@ -47,7 +47,7 @@ A Chrome extension that detects ATS forms, fills known fields locally from a can
 | F6 | Ashby adapter | Extension | |
 | F7 | Local standard-field autofill (zero API calls) | Extension | Name, contact, work auth, EEO |
 | F8 | Job description scraping per ATS | Extension | Powers LLM context |
-| F9 | LLM-tailored long-form answer generation | Backend | `/api/extension/autofill` |
+| F9 | LLM-tailored long-form answer generation | Backend | ✅ M4 — Anthropic prompt caching, profile prefix, cost logging |
 | F10 | `custom_answers` hash cache (skip LLM on repeat) | Backend | Keyed by question_hash + job_context_hash |
 | F11 | Stripe Checkout + Free/Pro tiers | Dashboard + webhook | Free 5 tailored/day, Pro unlimited w/ burst cap |
 | F12 | Per-user rate limiting | Backend middleware | |
@@ -141,11 +141,14 @@ Each milestone is a checkpoint where the product should be demo-able end-to-end 
 
 **Exit criteria:** Extension posts questions, receives structured responses, fills known ones, leaves unknowns blank.
 
-### M4 — LLM tailoring for long-form
-- [ ] Prompt design (system prompt + cached profile + user question + JD context)
-- [ ] Prompt caching via `cache_control` on the frozen system + profile prefix
-- [ ] `custom_answers` hash cache lookup before LLM call (keyed by `question_hash` + `job_context_hash`)
-- [ ] Cost logging row per LLM call; write answer back to `custom_answers` on save
+### M4 — LLM tailoring for long-form ✅
+- [x] Prompt design: SYSTEM_PROMPT with persona, rules, word limits (150–400 words)
+- [x] Profile prefix template: work experience, education, skills, summary (cacheable per-user)
+- [x] Anthropic prompt caching: system + profile sent with `cache_control: ephemeral`
+- [x] `generate_answer()` in `app/autofill/llm.py`: messages API with cached system prompt
+- [x] `custom_answers` hash cache lookup in autofill route before LLM call
+- [x] Cost logging: `log_llm_cost()` writes to `llm_cost_log` per call
+- [x] Graceful degradation: LLM errors return null rather than failing the batch
 
 **Exit criteria:** Long-form answer arrives in < 8s, costs < $0.02, second identical question hits cache with zero LLM spend. Question classifier routes to cache/LLM appropriately.
 
