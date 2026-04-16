@@ -1,10 +1,11 @@
-"""M3 — Heuristic autofill endpoint.
+"""M3/M4 — Heuristic + LLM autofill endpoint.
 
 Handles:
 - /api/extension/autofill  (POST, JWT-auth)
   - Accepts list of questions + job context
   - Checks custom_answers cache (question_hash + job_context_hash)
   - Routes easy questions to profile lookups via question classifier
+  - Routes hard questions to LLM generation (M4)
   - Returns per-question answer + source + confidence
 """
 from __future__ import annotations
@@ -47,6 +48,7 @@ class QuestionInput(BaseModel):
 class AutofillRequest(BaseModel):
     questions: list[QuestionInput]
     job_context_hash: str = Field(default="")
+    job_context: dict = Field(default_factory=dict)  # {description: str, title: str, ...}
 
 
 class AnswerOutput(BaseModel):
@@ -235,15 +237,36 @@ def autofill(
                 ))
                 continue
 
-        # 5. LLM needed — return null (M4 wires the LLM call)
-        results.append(AnswerOutput(
-            question=item.question,
-            answer=None,
-            source="llm",
-            confidence=0.0,
-            cached=False,
-            question_hash=q_hash,
-        ))
+        # 5. LLM generation (M4)
+        from ..autofill.llm import generate_answer, log_llm_cost
+        try:
+            job_desc = payload.job_context.get("description", "") if payload.job_context else ""
+            llm_result = generate_answer(
+                profile=profile,
+                question=item.question,
+                job_description=job_desc,
+                job_context_hash=job_ctx,
+            )
+            _save_cached_answer(db, uid, q_hash, job_ctx, llm_result.answer, source="llm")
+            log_llm_cost(db, uid, "autofill", llm_result)
+            results.append(AnswerOutput(
+                question=item.question,
+                answer=llm_result.answer,
+                source="llm",
+                confidence=1.0,
+                cached=False,
+                question_hash=q_hash,
+            ))
+        except Exception as e:
+            # LLM failed — return null rather than crashing the whole batch
+            results.append(AnswerOutput(
+                question=item.question,
+                answer=None,
+                source="llm_error",
+                confidence=0.0,
+                cached=False,
+                question_hash=q_hash,
+            ))
 
     db.commit()
     return JSONResponse({"results": [r.model_dump() for r in results]})
