@@ -52,11 +52,12 @@ A Chrome extension that detects ATS forms, fills known fields locally from a can
 | F11 | Stripe Checkout + Free/Pro tiers | Dashboard + webhook | Free 5 tailored/day, Pro unlimited w/ burst cap |
 | F12 | Per-user rate limiting | Backend middleware | |
 | F13 | LLM cost logging (user, model, tokens, cost_cents) | Backend | Day one |
+| F14 | Question classifier (pattern match easy vs hard questions) | Backend | Cheap routing — cache hit or LLM call |
 
 ## 6. Out of Scope (explicit deferrals)
 
 - Workday / LinkedIn adapters → v2
-- Admin UI (v1 uses IP-allowlisted `/admin` if needed)
+- Admin UI → v1.1b (IP-allowlisted `/admin` super admin panel, user dashboard as v1.1a)
 - Analytics dashboard for users
 - Multi-profile support (one profile per account in v1)
 - Team / employer features
@@ -99,6 +100,28 @@ Each milestone is a checkpoint where the product should be demo-able end-to-end 
 
 **Exit criteria:** I can sign up, upload my resume, fix any parse errors, and save. `SELECT profile_encrypted FROM users` returns encrypted bytes.
 
+### M1.1 — Admin panels
+**Goal:** User self-service dashboard + super-admin system management.
+
+#### M1.1a — User admin panel
+- [ ] Profile editor with per-section forms (upgrade from JSON textarea)
+- [ ] Subscription status + tier display
+- [ ] Usage stats (autofill count today, LLM calls this month)
+- [ ] Billing portal link (Stripe customer portal)
+- [ ] Data export + account deletion
+
+**Exit criteria:** User can manage their entire account from `/app/dashboard` without touching raw JSON.
+
+#### M1.1b — Super admin panel
+- [ ] IP-allowlisted `/admin` route (middleware guard)
+- [ ] User list + search (email, signup date, tier, status)
+- [ ] Per-user: view profile, override tier, disable account
+- [ ] Stripe paywall overrides (grant free Pro, revoke trial, etc.)
+- [ ] System-wide usage metrics (total users, DAU, LLM spend MTD, revenue)
+- [ ] Basic error log viewer (last 100 errors)
+
+**Exit criteria:** Admin can manage any user account and see system health from `/admin`.
+
 ### M2 — Extension skeleton + Greenhouse (heuristic-only)
 - [x] MV3 manifest with scoped host_permissions
 - [x] Service worker + content-script loader per ATS
@@ -126,6 +149,9 @@ Each milestone is a checkpoint where the product should be demo-able end-to-end 
 - [ ] `custom_answers` hash cache lookup before LLM call (keyed by `question_hash` + `job_context_hash`)
 - [ ] Cost logging row per LLM call
 - [ ] Write answer back to `custom_answers` on save
+- [ ] Question classifier (cheap pattern match for "easy" fields — salary, notice period, start date — vs "hard" cover-letter style needing LLM)
+
+**Exit criteria:** Long-form answer arrives in < 8s, costs < $0.02, second identical question hits cache with zero LLM spend. Question classifier routes to cache/LLM appropriately.
 
 **Exit criteria:** Long-form answer arrives in < 8s, costs < $0.02, second identical question hits cache with zero LLM spend.
 
