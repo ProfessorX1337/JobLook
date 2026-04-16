@@ -149,10 +149,13 @@ Each milestone is a checkpoint where the product should be demo-able end-to-end 
 
 **Exit criteria:** Long-form answer arrives in < 8s, costs < $0.02, second identical question hits cache with zero LLM spend. Question classifier routes to cache/LLM appropriately.
 
-### M5 — Lever + Ashby adapters
-- [ ] Lever adapter + its JD scraper
-- [ ] Ashby adapter + its JD scraper
-- [ ] Cross-ATS regression: same profile, same test postings, capture fill-rate per adapter
+### M5 — Lever + Ashby adapters ✅
+- [x] Lever adapter: `matches()` on `lever.co/lever.io/lever.us`, `detectForm`, `extractJobContext`, `listFields`
+- [x] Ashby adapter: `matches()` on `ashbyhq.com`, `detectForm`, `extractJobContext`, `listFields`
+- [x] Both adapters fall back to raw form input queries if wrapper divs aren't found
+- [x] All three adapters wired into `ADAPTERS` array in `main.js`
+- [x] Popup: `Fill custom answers (AI)` button wired to `content:fillCustom` → `/api/extension/autofill`
+- [ ] Cross-ATS regression: same profile, same test postings, capture fill-rate per adapter (manual)
 
 **Exit criteria:** 90% fill rate on 10 sample postings per ATS.
 
