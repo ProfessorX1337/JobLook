@@ -8,14 +8,14 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from .auth import CSRF_COOKIE, issue_csrf_token, optional_current_user, set_csrf_cookie
+from .middleware.admin import AdminIPMiddleware
 from .models import User
+from .routes import admin as admin_routes
 from .routes import auth as auth_routes
+from .routes import autofill as autofill_routes
 from .routes import blog as blog_routes
 from .routes import dashboard as dashboard_routes
 from .routes import extension as extension_routes
-from .routes import admin as admin_routes
-
-from .middleware.admin import AdminIPMiddleware
 
 app = FastAPI(title="JobLook")
 app.add_middleware(AdminIPMiddleware)
@@ -32,6 +32,7 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
 app.include_router(admin_routes.router)
+app.include_router(autofill_routes.router)
 app.include_router(auth_routes.router)
 app.include_router(blog_routes.router)
 app.include_router(dashboard_routes.router)
@@ -91,8 +92,6 @@ def contact_page(request: Request):
 
 @app.post("/contact", response_class=HTMLResponse)
 def contact_form_submit(request: Request):
-    # This would handle the contact form submission
-    # For now, just redirect back to contact page with a success message
     return RedirectResponse("/contact?success=1", status_code=303)
 
 
