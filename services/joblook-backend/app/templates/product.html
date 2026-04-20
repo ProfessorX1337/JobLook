@@ -1,202 +1,537 @@
 {% extends "base.html" %}
 {% block title %}Product — JobLook{% endblock %}
 {% block body %}
-<section class="product-hero">
-  <div class="container">
-    <h1>How JobLook Works</h1>
-    <p class="hero-subtitle">See how our Chrome extension transforms your job application process</p>
-  </div>
-</section>
+{% set chrome_store_url = "#install" %}
 
-<section class="product-demo">
-  <div class="container">
-    <div class="demo-steps">
-      <div class="step">
-        <div class="step-number">1</div>
-        <div class="step-content">
-          <h3>Install & Setup</h3>
-          <p>Add JobLook to Chrome and complete your profile once. Include your work history, education, skills, and sample responses.</p>
-          <div class="demo-visual">
-            <div class="setup-card">
-              <h4>Your Profile</h4>
-              <div class="profile-fields">
-                <div class="field">✓ Contact Information</div>
-                <div class="field">✓ Work Experience</div>
-                <div class="field">✓ Education</div>
-                <div class="field">✓ Skills & Certifications</div>
+<style>
+  .pp { color:var(--ink); }
+  .pp .container { max-width:1200px; margin:0 auto; padding:0 1.5rem; }
+
+  /* Hero */
+  .pp-hero { max-width:1200px; margin:0 auto; padding:4.5rem 1.5rem 2.5rem; text-align:center; }
+  .pp-hero .eyebrow { display:inline-flex; align-items:center; gap:.5rem; font-family:var(--mono); font-size:.78rem; color:var(--mute); text-transform:uppercase; letter-spacing:.12em; margin-bottom:1.25rem; }
+  .pp-hero .eyebrow::before { content:""; width:6px; height:6px; background:var(--ok); border-radius:50%; box-shadow:0 0 0 4px rgba(16,185,129,.15); }
+  .pp-hero h1 { font-size:clamp(2.2rem, 4.5vw, 3.5rem); line-height:1.05; font-weight:800; margin:0 0 1rem; letter-spacing:-0.02em; }
+  .pp-hero h1 em { font-style:normal; background:linear-gradient(180deg, transparent 62%, rgba(37,99,235,.22) 62%); padding:0 .1em; }
+  .pp-hero .sub { font-size:1.12rem; color:var(--ink-soft); max-width:34em; margin:0 auto; line-height:1.55; }
+
+  /* Theater: the big multi-stage demo */
+  .pp-theater { max-width:1200px; margin:1.5rem auto 5rem; padding:0 1.5rem; }
+  .pp-stage { position:relative; background:var(--ink); color:#e6edf5; border-radius:16px; padding:1.25rem; overflow:hidden; box-shadow:0 40px 80px -40px rgba(11,18,32,.45); }
+  .pp-stage .bar { display:flex; align-items:center; gap:.5rem; padding:.35rem .5rem .9rem; border-bottom:1px solid rgba(255,255,255,.08); }
+  .pp-stage .dot { width:10px; height:10px; border-radius:50%; background:#334155; }
+  .pp-stage .url { flex:1; background:rgba(255,255,255,.06); border-radius:6px; padding:.35rem .7rem; font-family:var(--mono); font-size:.78rem; color:#94a3b8; }
+  .pp-stage .url b { color:#cbd5e1; }
+  .pp-layout { display:grid; grid-template-columns: 1fr 320px; gap:1rem; padding:1.25rem 0 0; align-items:start; }
+  @media (max-width: 920px) { .pp-layout { grid-template-columns:1fr; } }
+
+  .pp-form { background:#0f172a; border:1px solid rgba(255,255,255,.06); border-radius:10px; padding:1.25rem; min-height:460px; }
+  .pp-form h3 { font-size:1.05rem; color:#f1f5f9; margin:0 0 1rem; font-weight:600; }
+  .pp-form .row { display:grid; grid-template-columns: 1fr 1fr; gap:.65rem; margin-bottom:.65rem; }
+  .pp-form .f { display:flex; flex-direction:column; gap:.3rem; }
+  .pp-form .lbl { font-family:var(--mono); font-size:.68rem; color:#64748b; text-transform:uppercase; letter-spacing:.08em; }
+  .pp-form .inp { background:#1e293b; border:1px solid rgba(255,255,255,.08); border-radius:6px; padding:.6rem .7rem; font-size:.88rem; color:#e2e8f0; min-height:2.2rem; transition: border-color .2s, background .2s; }
+  .pp-form .inp.highlight { border-color:var(--brand); background:rgba(37,99,235,.12); }
+  .pp-form .inp.filled { color:#f8fafc; }
+  .pp-form .essay { min-height:120px; white-space:pre-wrap; line-height:1.55; }
+  .pp-form .essay .caret { display:inline-block; width:2px; height:1em; background:var(--brand); margin-left:1px; vertical-align:-2px; animation:pp-blink 1s steps(1) infinite; }
+  @keyframes pp-blink { 50% { opacity:0; } }
+
+  /* Popup card (right rail) */
+  .pp-pop { background:#fafaf7; color:var(--ink); border-radius:12px; padding:.75rem; font-size:.82rem; box-shadow:0 20px 40px -20px rgba(0,0,0,.5); }
+  .pp-pop .h { display:flex; align-items:center; justify-content:space-between; padding:.35rem .35rem .6rem; border-bottom:1px solid var(--line); }
+  .pp-pop .brand-mini { display:flex; align-items:center; gap:.4rem; font-weight:700; font-size:.82rem; }
+  .pp-pop .brand-mini .mark { width:18px; height:18px; border-radius:4px; background:var(--ink); color:#fafaf7; display:grid; place-items:center; font-weight:800; font-size:.66rem; position:relative; }
+  .pp-pop .brand-mini .mark::after { content:""; position:absolute; top:2px; right:2px; width:4px; height:4px; background:var(--brand); border-radius:1px; }
+  .pp-pop .status { display:flex; align-items:center; gap:.3rem; font-family:var(--mono); font-size:.62rem; color:var(--mute); text-transform:uppercase; letter-spacing:.08em; }
+  .pp-pop .status .d { width:6px; height:6px; border-radius:50%; background:var(--ok); }
+  .pp-pop .body { padding:.75rem .35rem .35rem; }
+  .pp-pop .lbl-mini { font-family:var(--mono); font-size:.62rem; color:var(--mute); text-transform:uppercase; letter-spacing:.1em; margin-bottom:.3rem; }
+  .pp-pop .profile-mini { display:flex; align-items:center; gap:.5rem; margin-bottom:.85rem; }
+  .pp-pop .avatar-mini { width:26px; height:26px; border-radius:50%; background:var(--brand-soft); color:var(--brand); display:grid; place-items:center; font-weight:700; font-size:.75rem; flex-shrink:0; }
+  .pp-pop .ptitle { font-weight:600; font-size:.82rem; }
+  .pp-pop .pcount { font-size:.74rem; color:var(--mute); margin:.25rem 0 .65rem; }
+  .pp-pop .pcount b { color:var(--ink); font-weight:700; }
+  .pp-pop .btn-mini { display:block; width:100%; padding:.55rem; border:1px solid transparent; border-radius:6px; font:inherit; font-weight:600; font-size:.78rem; cursor:pointer; margin-top:.3rem; transition:background .2s; }
+  .pp-pop .btn-mini.primary { background:var(--ink); color:#fff; }
+  .pp-pop .btn-mini.primary.busy { background:var(--brand); }
+  .pp-pop .btn-mini.ghost { background:transparent; color:var(--ink); border-color:var(--line); }
+  .pp-pop .chips { display:flex; gap:.35rem; margin-top:.65rem; }
+  .pp-pop .chip-mini { flex:1; background:var(--bg); border:1px solid var(--line); border-radius:5px; padding:.35rem; text-align:center; }
+  .pp-pop .chip-mini .v { font-family:var(--mono); font-weight:700; font-size:.85rem; color:var(--ink); }
+  .pp-pop .chip-mini .l { font-family:var(--mono); font-size:.56rem; color:var(--mute); text-transform:uppercase; letter-spacing:.06em; margin-top:1px; }
+  .pp-pop .chip-mini.ok .v { color:var(--ok); }
+  .pp-pop .cursor { position:absolute; width:14px; height:20px; pointer-events:none; transition:left .35s ease, top .35s ease, opacity .2s; z-index:5; opacity:0; }
+  .pp-pop .cursor::before { content:""; display:block; width:0; height:0; border-left:10px solid #0b1220; border-top:5px solid transparent; border-bottom:5px solid transparent; transform:rotate(-35deg); }
+  .pp-pop { position:relative; }
+
+  /* Stage progress tracker */
+  .pp-steps { display:grid; grid-template-columns:repeat(4, 1fr); gap:.4rem; margin-top:1.25rem; padding:0 .25rem; }
+  .pp-steps .s { display:flex; flex-direction:column; gap:.35rem; padding:.65rem .75rem; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06); border-radius:8px; font-size:.78rem; color:#94a3b8; transition:background .3s, border-color .3s, color .3s; }
+  .pp-steps .s .n { font-family:var(--mono); font-size:.62rem; color:#64748b; letter-spacing:.08em; text-transform:uppercase; }
+  .pp-steps .s.active { background:rgba(37,99,235,.15); border-color:var(--brand); color:#f1f5f9; }
+  .pp-steps .s.active .n { color:#93c5fd; }
+  .pp-steps .s.done { background:rgba(16,185,129,.08); border-color:rgba(16,185,129,.25); color:#d1fae5; }
+  .pp-steps .s.done .n::before { content:"✓ "; color:var(--ok); }
+  @media (max-width: 720px) { .pp-steps { grid-template-columns:1fr 1fr; } }
+
+  /* Section scaffolding */
+  .pp-section { padding:5rem 1.5rem; max-width:1200px; margin:0 auto; }
+  .pp-section.alt { background:var(--paper); border-top:1px solid var(--line); border-bottom:1px solid var(--line); max-width:none; }
+  .pp-section.alt > div { max-width:1200px; margin:0 auto; }
+  .pp-section h2 { font-size:clamp(1.8rem, 3.5vw, 2.6rem); font-weight:800; letter-spacing:-0.02em; margin:0 0 1rem; max-width:22em; }
+  .pp-section .lede { font-size:1.08rem; color:var(--ink-soft); max-width:38em; margin:0 0 3rem; line-height:1.6; }
+  .pp-eyebrow { display:inline-block; font-family:var(--mono); font-size:.72rem; color:var(--mute); text-transform:uppercase; letter-spacing:.14em; margin-bottom:1rem; }
+
+  /* ATS grid */
+  .pp-ats { display:grid; grid-template-columns:repeat(3, 1fr); gap:1.25rem; }
+  @media (max-width: 860px) { .pp-ats { grid-template-columns:1fr; } }
+  .pp-ats .card { background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:1.75rem; transition:border-color .2s, transform .2s; }
+  .pp-ats .card:hover { border-color:var(--ink); transform:translateY(-2px); }
+  .pp-ats .card .name { font-family:var(--mono); font-size:.72rem; color:var(--mute); text-transform:uppercase; letter-spacing:.14em; margin-bottom:.6rem; }
+  .pp-ats .card .h3 { font-size:1.2rem; font-weight:700; margin:0 0 .65rem; }
+  .pp-ats .card p { font-size:.92rem; color:var(--ink-soft); line-height:1.6; margin:0 0 1rem; }
+  .pp-ats .card .tags { display:flex; flex-wrap:wrap; gap:.35rem; margin-top:1rem; }
+  .pp-ats .card .tag { font-family:var(--mono); font-size:.68rem; color:var(--ink-soft); background:var(--bg); border:1px solid var(--line); padding:.2rem .5rem; border-radius:4px; }
+
+  /* AI mapping demo */
+  .pp-ai { display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:stretch; }
+  @media (max-width: 860px) { .pp-ai { grid-template-columns:1fr; } }
+  .pp-ai .panel { background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:1.5rem; }
+  .pp-ai .panel h4 { font-family:var(--mono); font-size:.72rem; color:var(--mute); text-transform:uppercase; letter-spacing:.12em; margin:0 0 1rem; font-weight:600; }
+  .pp-ai .src { padding:.6rem .75rem; background:var(--bg); border-left:3px solid var(--brand); margin-bottom:.5rem; font-size:.88rem; line-height:1.5; border-radius:2px; }
+  .pp-ai .src b { color:var(--brand); font-family:var(--mono); font-size:.74rem; margin-right:.4rem; text-transform:uppercase; letter-spacing:.06em; }
+  .pp-ai .out { font-size:.95rem; line-height:1.65; color:var(--ink); }
+  .pp-ai .out mark { background:rgba(37,99,235,.15); color:var(--ink); padding:0 .15em; border-radius:2px; }
+
+  /* Pipeline */
+  .pp-pipe { background:var(--paper); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  .pp-pipe .pipe-head { display:grid; grid-template-columns:2fr 1fr 1fr 1fr 1fr; padding:.9rem 1.25rem; background:var(--bg); font-family:var(--mono); font-size:.7rem; color:var(--mute); text-transform:uppercase; letter-spacing:.1em; border-bottom:1px solid var(--line); }
+  .pp-pipe .pipe-row { display:grid; grid-template-columns:2fr 1fr 1fr 1fr 1fr; padding:.95rem 1.25rem; border-bottom:1px solid var(--line-soft); align-items:center; font-size:.88rem; }
+  .pp-pipe .pipe-row:last-child { border-bottom:none; }
+  .pp-pipe .pipe-row .co { font-weight:600; }
+  .pp-pipe .pipe-row .role { display:block; font-size:.78rem; color:var(--mute); margin-top:2px; font-weight:400; }
+  .pp-pipe .stage-pill { display:inline-flex; align-items:center; gap:.35rem; font-family:var(--mono); font-size:.7rem; padding:.2rem .5rem; border-radius:4px; text-transform:uppercase; letter-spacing:.06em; }
+  .pp-pipe .stage-pill::before { content:""; width:5px; height:5px; border-radius:50%; }
+  .pp-pipe .stage-applied { background:rgba(37,99,235,.1); color:var(--brand); }
+  .pp-pipe .stage-applied::before { background:var(--brand); }
+  .pp-pipe .stage-interview { background:rgba(245,158,11,.12); color:#b45309; }
+  .pp-pipe .stage-interview::before { background:var(--warn); }
+  .pp-pipe .stage-offer { background:rgba(16,185,129,.12); color:#047857; }
+  .pp-pipe .stage-offer::before { background:var(--ok); }
+  .pp-pipe .meta { font-family:var(--mono); font-size:.78rem; color:var(--ink-soft); }
+  @media (max-width: 860px) {
+    .pp-pipe .pipe-head { display:none; }
+    .pp-pipe .pipe-row { grid-template-columns:1fr; gap:.3rem; padding:1rem 1.25rem; }
+  }
+
+  /* Privacy */
+  .pp-priv { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  @media (max-width: 720px) { .pp-priv { grid-template-columns:1fr; } }
+  .pp-priv .col { padding:1.25rem 1.5rem; border-radius:10px; }
+  .pp-priv .col.does { background:rgba(16,185,129,.06); border:1px solid rgba(16,185,129,.25); }
+  .pp-priv .col.wont { background:var(--bg); border:1px solid var(--line); }
+  .pp-priv .col h4 { font-family:var(--mono); font-size:.72rem; color:var(--mute); text-transform:uppercase; letter-spacing:.12em; margin:0 0 .85rem; }
+  .pp-priv .col.does h4 { color:#047857; }
+  .pp-priv .col ul { list-style:none; padding:0; margin:0; }
+  .pp-priv .col li { padding:.55rem 0 .55rem 1.5rem; position:relative; font-size:.92rem; line-height:1.5; color:var(--ink-soft); border-top:1px solid rgba(0,0,0,.04); }
+  .pp-priv .col li:first-child { border-top:none; }
+  .pp-priv .col.does li::before { content:"✓"; position:absolute; left:0; top:.55rem; color:var(--ok); font-weight:700; }
+  .pp-priv .col.wont li::before { content:"×"; position:absolute; left:0; top:.4rem; color:#dc2626; font-weight:700; font-size:1.15rem; }
+
+  /* End CTA */
+  .pp-end { text-align:center; padding:5rem 1.5rem; background:var(--ink); color:#f1f5f9; }
+  .pp-end h2 { color:#fff; font-size:clamp(1.8rem, 3.5vw, 2.5rem); margin:0 0 1rem; font-weight:800; letter-spacing:-0.02em; }
+  .pp-end p { color:#cbd5e1; font-size:1.1rem; max-width:32em; margin:0 auto 2rem; line-height:1.6; }
+  .pp-end .actions { display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap; }
+  .pp-end .cta { display:inline-flex; align-items:center; gap:.5rem; padding:.85rem 1.4rem; font-weight:600; font-size:.95rem; border-radius:8px; text-decoration:none; border:1px solid transparent; }
+  .pp-end .cta.primary { background:#fff; color:var(--ink); }
+  .pp-end .cta.primary:hover { background:#fafaf7; }
+  .pp-end .cta.ghost { color:#f1f5f9; border-color:rgba(255,255,255,.2); }
+  .pp-end .cta.ghost:hover { border-color:#fff; }
+  .pp-end .tiny { font-family:var(--mono); font-size:.72rem; color:#64748b; margin-top:1.25rem; text-transform:uppercase; letter-spacing:.1em; }
+</style>
+
+<div class="pp">
+
+  <!-- HERO -->
+  <section class="pp-hero">
+    <div class="eyebrow">Product tour · Chrome extension</div>
+    <h1>Watch JobLook <em>fill a real application</em>.</h1>
+    <p class="sub">No screenshots, no mockup. The sequence below is the extension running against a Greenhouse form — the same adapter, the same autofill, the same AI that writes your long-form answers from your resume.</p>
+  </section>
+
+  <!-- THEATER -->
+  <section class="pp-theater">
+    <div class="pp-stage" id="pp-stage">
+      <div class="bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <div class="url"><b>boards.greenhouse.io</b>/acmeco/jobs/4837291 — Senior Product Engineer</div>
+      </div>
+
+      <div class="pp-layout">
+
+        <!-- Left: the form -->
+        <div class="pp-form">
+          <h3>Apply · Senior Product Engineer</h3>
+          <div class="row">
+            <div class="f"><span class="lbl">First name</span><span class="inp" id="f-first">&nbsp;</span></div>
+            <div class="f"><span class="lbl">Last name</span><span class="inp" id="f-last">&nbsp;</span></div>
+          </div>
+          <div class="row">
+            <div class="f"><span class="lbl">Email</span><span class="inp" id="f-email">&nbsp;</span></div>
+            <div class="f"><span class="lbl">Phone</span><span class="inp" id="f-phone">&nbsp;</span></div>
+          </div>
+          <div class="row" style="grid-template-columns:1fr;">
+            <div class="f"><span class="lbl">LinkedIn URL</span><span class="inp" id="f-linkedin">&nbsp;</span></div>
+          </div>
+          <div class="row" style="grid-template-columns:1fr;">
+            <div class="f">
+              <span class="lbl">Why are you a fit for this role? <span style="color:#64748b;text-transform:none;font-family:inherit;letter-spacing:0;">(200+ words)</span></span>
+              <span class="inp essay" id="f-essay">&nbsp;</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: the popup -->
+        <div class="pp-pop" id="pp-popup">
+          <div class="h">
+            <div class="brand-mini"><span class="mark">J</span>JobLook</div>
+            <div class="status" id="pp-status"><span class="d"></span><span>Connected</span></div>
+          </div>
+          <div class="body">
+            <div class="lbl-mini">Signed in as</div>
+            <div class="profile-mini">
+              <div class="avatar-mini">AR</div>
+              <div>
+                <div class="ptitle">Alex Rivera</div>
+                <div style="font-size:.72rem;color:var(--mute);">alex@rivera.dev</div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step-number">2</div>
-        <div class="step-content">
-          <h3>Navigate to Any Job Application</h3>
-          <p>Visit job applications on Greenhouse, Lever, Ashby, or other supported platforms. JobLook automatically detects application forms.</p>
-          <div class="demo-visual">
-            <div class="supported-platforms">
-              <div class="platform">Greenhouse</div>
-              <div class="platform">Lever</div>
-              <div class="platform">Ashby</div>
-              <div class="platform">BambooHR</div>
+            <div class="lbl-mini">Form detected</div>
+            <div class="ptitle" style="margin-bottom:.2rem;">Greenhouse application</div>
+            <div class="pcount"><b id="pp-nfields">6</b> fields ready to fill.</div>
+            <button class="btn-mini primary" id="pp-btn">Fill standard fields</button>
+            <button class="btn-mini ghost" id="pp-btn2">Fill custom answers (AI)</button>
+            <div class="chips" id="pp-chips" style="display:none;">
+              <div class="chip-mini ok"><div class="v" id="pp-n-filled">0</div><div class="l">Filled</div></div>
+              <div class="chip-mini"><div class="v" id="pp-n-skipped">0</div><div class="l">Skipped</div></div>
+              <div class="chip-mini"><div class="v" id="pp-n-unknown">0</div><div class="l">Unknown</div></div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="step">
-        <div class="step-number">3</div>
-        <div class="step-content">
-          <h3>One-Click Auto-Fill</h3>
-          <p>Click the JobLook icon to instantly fill all standard fields. For essays and cover letters, our AI generates personalized responses based on the job description.</p>
-          <div class="demo-visual">
-            <div class="extension-popup">
-              <div class="popup-header">JobLook</div>
-              <button class="fill-button">Fill Application</button>
-              <div class="ai-options">
-                <label><input type="checkbox" checked> Generate cover letter</label>
-                <label><input type="checkbox" checked> Personalize responses</label>
-              </div>
-            </div>
+      <!-- Step tracker -->
+      <div class="pp-steps" id="pp-steps">
+        <div class="s" data-i="0"><span class="n">Step 01</span>Detect form</div>
+        <div class="s" data-i="1"><span class="n">Step 02</span>Fill standard fields</div>
+        <div class="s" data-i="2"><span class="n">Step 03</span>Draft the essay</div>
+        <div class="s" data-i="3"><span class="n">Step 04</span>Hand back for review</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ATS SUPPORT -->
+  <section class="pp-section alt">
+    <div>
+      <div class="pp-eyebrow">Three of them, today</div>
+      <h2>We only wrote adapters for ATSes we actually tested.</h2>
+      <p class="lede">Generic form-fillers break the second a field is rendered inside a shadow DOM or a React-controlled input. Ours don't, because we wrote a specific adapter for each platform, and we only ship the three where it's reliable.</p>
+      <div class="pp-ats">
+        <div class="card">
+          <div class="name">Greenhouse</div>
+          <div class="h3">Boards &amp; embedded forms</div>
+          <p>Contact block, education, work history, EEO, demographic, voluntary disclosures, custom short-answer and long-answer questions. Multi-resume variants supported.</p>
+          <div class="tags">
+            <span class="tag">boards.greenhouse.io</span>
+            <span class="tag">job-boards.greenhouse.io</span>
+            <span class="tag">embedded iframes</span>
           </div>
         </div>
-      </div>
-
-      <div class="step">
-        <div class="step-number">4</div>
-        <div class="step-content">
-          <h3>Review & Submit</h3>
-          <p>Always review the filled information and AI-generated content. Make any edits needed, then submit your application with confidence.</p>
-          <div class="demo-visual">
-            <div class="review-panel">
-              <div class="review-item">✓ Contact info filled</div>
-              <div class="review-item">✓ Experience populated</div>
-              <div class="review-item">⚡ AI cover letter generated</div>
-              <div class="submit-button">Ready to Submit</div>
-            </div>
+        <div class="card">
+          <div class="name">Lever</div>
+          <div class="h3">Jobs &amp; apply flows</div>
+          <p>Basics, location, salary expectations, additional information, custom text questions, yes/no acknowledgements, links (portfolio / GitHub / LinkedIn). Resume upload prompts.</p>
+          <div class="tags">
+            <span class="tag">jobs.lever.co</span>
+            <span class="tag">jobs.eu.lever.co</span>
+            <span class="tag">hire.lever.co</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="name">Ashby</div>
+          <div class="h3">Job board forms</div>
+          <p>Name, email, phone, links, upload prompts, custom compound fields, radio and checkbox groups, conditional reveal questions that appear after you pick an option.</p>
+          <div class="tags">
+            <span class="tag">jobs.ashbyhq.com</span>
+            <span class="tag">ashbyhq.com/&hellip;/jobs</span>
+            <span class="tag">dynamic reveals</span>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="features-detail">
-  <div class="container">
-    <h2>Powerful Features for Job Seekers</h2>
-    
-    <div class="feature-sections">
-      <div class="feature-section">
-        <div class="feature-content">
-          <h3>Smart Form Detection</h3>
-          <p>Our advanced algorithms identify and map form fields across different ATS platforms, ensuring accurate data placement every time.</p>
-          <ul>
-            <li>Automatic field recognition</li>
-            <li>Multi-format support</li>
-            <li>Custom field mapping</li>
-            <li>Error detection & correction</li>
-          </ul>
-        </div>
-        <div class="feature-visual">
-          <div class="form-detection-demo">
-            <div class="detected-field">Name Field → John Smith</div>
-            <div class="detected-field">Email Field → john@email.com</div>
-            <div class="detected-field">Phone Field → (555) 123-4567</div>
-            <div class="ai-generated">Essay Field → AI Generated ✨</div>
-          </div>
-        </div>
+  <!-- AI MAPPING -->
+  <section class="pp-section">
+    <div class="pp-eyebrow">How the long-form answers get written</div>
+    <h2>Your resume is the source. The AI is the editor.</h2>
+    <p class="lede">When an application asks "why do you want this role?", JobLook doesn't invent a story. It pulls the specific bullets, companies, and metrics already in your resume, matches them to the job description, and drafts something you can edit.</p>
+    <div class="pp-ai">
+      <div class="panel">
+        <h4>From your resume · what we read</h4>
+        <div class="src"><b>Role</b>Led backend team at Stripe (2022–2024)</div>
+        <div class="src"><b>Metric</b>Cut P99 latency 38% on billing API</div>
+        <div class="src"><b>Project</b>Migrated 4B events to Kafka without downtime</div>
+        <div class="src"><b>Skill</b>Go, Kafka, Postgres, distributed systems</div>
       </div>
-
-      <div class="feature-section reverse">
-        <div class="feature-content">
-          <h3>AI-Powered Personalization</h3>
-          <p>Generate compelling cover letters and essay responses tailored to each job posting using advanced natural language processing.</p>
-          <ul>
-            <li>Job description analysis</li>
-            <li>Tone matching</li>
-            <li>Keyword optimization</li>
-            <li>Multiple response variations</li>
-          </ul>
-        </div>
-        <div class="feature-visual">
-          <div class="ai-demo">
-            <div class="job-posting">
-              "Seeking experienced developer with React expertise..."
-            </div>
-            <div class="arrow">↓</div>
-            <div class="ai-response">
-              "My 5 years of React development experience aligns perfectly with..."
-            </div>
-          </div>
-        </div>
+      <div class="panel">
+        <h4>Draft for "Why this role?" · what gets typed</h4>
+        <p class="out">Your posting mentions scaling a payments platform to <mark>billions of events per day</mark>, which maps closely to what I did at Stripe — I <mark>migrated 4B events to Kafka</mark> without downtime and <mark>cut P99 latency on the billing API by 38%</mark>. The team size you're describing (~8 engineers, heavy Go and Postgres) is the size I was leading. I'd want to talk about how you handle idempotency and the trade-offs you've made on consistency vs. throughput.</p>
       </div>
+    </div>
+  </section>
 
-      <div class="feature-section">
-        <div class="feature-content">
-          <h3>Application Tracking</h3>
-          <p>Keep track of all your applications in one centralized dashboard with status updates, follow-up reminders, and interview scheduling.</p>
-          <ul>
-            <li>Application timeline</li>
-            <li>Status notifications</li>
-            <li>Follow-up reminders</li>
-            <li>Interview preparation</li>
-          </ul>
+  <!-- PIPELINE -->
+  <section class="pp-section alt">
+    <div>
+      <div class="pp-eyebrow">Pipeline tracker</div>
+      <h2>Every application you fill shows up here — automatically.</h2>
+      <p class="lede">Because the extension saw you submit the form, it knows the role, the company, the ATS, and the date. No separate sheet to maintain.</p>
+      <div class="pp-pipe">
+        <div class="pipe-head">
+          <div>Company &amp; role</div>
+          <div>Stage</div>
+          <div>Applied</div>
+          <div>ATS</div>
+          <div>Next step</div>
         </div>
-        <div class="feature-visual">
-          <div class="dashboard-preview">
-            <div class="app-item">TechCorp - Applied 3 days ago</div>
-            <div class="app-item">StartupXYZ - Interview scheduled</div>
-            <div class="app-item">BigCo - Follow up needed</div>
-          </div>
+        <div class="pipe-row">
+          <div class="co">Stripe <span class="role">Senior Product Engineer</span></div>
+          <div><span class="stage-pill stage-interview">Interview</span></div>
+          <div class="meta">Apr 09</div>
+          <div class="meta">Greenhouse</div>
+          <div class="meta">Wed 2pm</div>
+        </div>
+        <div class="pipe-row">
+          <div class="co">Ramp <span class="role">Staff Engineer, Platform</span></div>
+          <div><span class="stage-pill stage-applied">Applied</span></div>
+          <div class="meta">Apr 11</div>
+          <div class="meta">Lever</div>
+          <div class="meta">—</div>
+        </div>
+        <div class="pipe-row">
+          <div class="co">Linear <span class="role">Software Engineer, Core</span></div>
+          <div><span class="stage-pill stage-offer">Offer</span></div>
+          <div class="meta">Mar 28</div>
+          <div class="meta">Ashby</div>
+          <div class="meta">Decide Fri</div>
+        </div>
+        <div class="pipe-row">
+          <div class="co">Vercel <span class="role">Engineering Manager</span></div>
+          <div><span class="stage-pill stage-applied">Applied</span></div>
+          <div class="meta">Apr 12</div>
+          <div class="meta">Greenhouse</div>
+          <div class="meta">—</div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="security-privacy">
-  <div class="container">
-    <h2>Your Privacy & Security Matter</h2>
-    <p>We take data protection seriously with enterprise-grade security measures</p>
-    
-    <div class="security-features">
-      <div class="security-feature">
-        <div class="security-icon">🔐</div>
-        <h3>End-to-End Encryption</h3>
-        <p>All data is encrypted in transit and at rest using AES-256 encryption</p>
+  <!-- PRIVACY -->
+  <section class="pp-section">
+    <div class="pp-eyebrow">What it reads, what it won't</div>
+    <h2>The extension is narrow on purpose.</h2>
+    <p class="lede">A tool that can fill a form can also exfiltrate one. We decided early that the simplest way to not abuse your trust is to not collect anything we don't need. Here's the exact line.</p>
+    <div class="pp-priv">
+      <div class="col does">
+        <h4>What JobLook does</h4>
+        <ul>
+          <li>Reads the labels, placeholders, and option lists on Greenhouse, Lever, and Ashby forms.</li>
+          <li>Reads the job description on the same page, so the AI draft is relevant.</li>
+          <li>Writes values from your profile into matching fields — nothing else.</li>
+          <li>Encrypts your resume at rest with per-row column keys (pgcrypto).</li>
+        </ul>
       </div>
-      
-      <div class="security-feature">
-        <div class="security-icon">🏠</div>
-        <h3>Local Data Storage</h3>
-        <p>Sensitive information stays on your device whenever possible</p>
-      </div>
-      
-      <div class="security-feature">
-        <div class="security-icon">🚫</div>
-        <h3>No Data Selling</h3>
-        <p>We never sell or share your personal information with third parties</p>
-      </div>
-      
-      <div class="security-feature">
-        <div class="security-icon">⚙️</div>
-        <h3>Full Control</h3>
-        <p>You decide what information to include and can delete your data anytime</p>
+      <div class="col wont">
+        <h4>What it won't do</h4>
+        <ul>
+          <li>Submit any application on its own — the submit click is always yours.</li>
+          <li>Read or fill forms on any site outside the three ATS domains above.</li>
+          <li>Sell, share, or train third-party models on your resume or answers.</li>
+          <li>Keep a browsing history or collect analytics beyond install success.</li>
+        </ul>
       </div>
     </div>
+  </section>
+
+</div>
+
+<!-- END CTA -->
+<section class="pp-end">
+  <h2>Install it. Fill something real.</h2>
+  <p>The extension is free to use for standard fields. AI drafts are free while you're under the weekly cap, and unlimited on Premium. You can uninstall it in one click.</p>
+  <div class="actions">
+    <a class="cta primary" href="{{ chrome_store_url | default('#install') }}">Add to Chrome — free</a>
+    <a class="cta ghost" href="/signup">Create an account</a>
   </div>
+  <div class="tiny">Chrome 116+ · Works on Greenhouse, Lever, Ashby</div>
 </section>
 
-<section class="cta-section">
-  <div class="container">
-    <h2>Ready to Streamline Your Job Search?</h2>
-    <p>Join thousands of professionals who save hours every week</p>
-    <div class="cta-buttons">
-      <a class="cta primary large" href="/signup">Start Free Trial</a>
-      <a class="cta secondary large" href="/pricing">View Pricing</a>
-    </div>
-  </div>
-</section>
+<script>
+(function () {
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const data = {
+    first: "Alex",
+    last: "Rivera",
+    email: "alex@rivera.dev",
+    phone: "(415) 555-0144",
+    linkedin: "linkedin.com/in/alexrivera",
+    essay: "Your posting mentions scaling a payments platform to billions of events per day, which maps closely to what I did at Stripe — I migrated 4B events to Kafka without downtime and cut P99 latency on the billing API by 38%. The team size you're describing (~8 engineers, heavy Go and Postgres) is the size I was leading. I'd want to talk about how you handle idempotency and the trade-offs you've made on consistency vs. throughput."
+  };
+
+  const el = {
+    first: document.getElementById("f-first"),
+    last: document.getElementById("f-last"),
+    email: document.getElementById("f-email"),
+    phone: document.getElementById("f-phone"),
+    linkedin: document.getElementById("f-linkedin"),
+    essay: document.getElementById("f-essay"),
+    steps: document.querySelectorAll("#pp-steps .s"),
+    btn: document.getElementById("pp-btn"),
+    btn2: document.getElementById("pp-btn2"),
+    chips: document.getElementById("pp-chips"),
+    nFilled: document.getElementById("pp-n-filled"),
+    nSkipped: document.getElementById("pp-n-skipped"),
+    nUnknown: document.getElementById("pp-n-unknown"),
+  };
+
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  function setStep(i, state) {
+    el.steps.forEach((s, idx) => {
+      s.classList.remove("active", "done");
+      if (idx < i) s.classList.add("done");
+      else if (idx === i) s.classList.add(state || "active");
+    });
+  }
+
+  function clearForm() {
+    ["first","last","email","phone","linkedin"].forEach(k => {
+      el[k].textContent = "";
+      el[k].classList.remove("filled","highlight");
+    });
+    el.essay.innerHTML = "&nbsp;";
+    el.chips.style.display = "none";
+    el.nFilled.textContent = "0";
+    el.nSkipped.textContent = "0";
+    el.nUnknown.textContent = "0";
+  }
+
+  async function fillField(key) {
+    const node = el[key];
+    node.classList.add("highlight");
+    await sleep(140);
+    node.textContent = data[key];
+    node.classList.add("filled");
+    await sleep(220);
+    node.classList.remove("highlight");
+  }
+
+  async function typeEssay() {
+    const node = el.essay;
+    const text = data.essay;
+    node.innerHTML = '<span class="caret"></span>';
+    let out = "";
+    // Fast chunked typing — 4 chars per tick
+    for (let i = 0; i < text.length; i += 4) {
+      out = text.slice(0, i + 4);
+      node.innerHTML = out + '<span class="caret"></span>';
+      await sleep(14);
+    }
+    node.innerHTML = text;
+  }
+
+  async function runOnce() {
+    clearForm();
+    await sleep(700);
+
+    // Step 1: detect
+    setStep(0, "active");
+    el.btn.classList.add("busy");
+    el.btn.textContent = "Detecting…";
+    await sleep(900);
+    el.btn.classList.remove("busy");
+    el.btn.textContent = "Fill standard fields";
+
+    // Step 2: fill standard
+    setStep(1, "active");
+    el.btn.classList.add("busy");
+    el.btn.textContent = "Filling…";
+    await fillField("first");
+    await fillField("last");
+    await fillField("email");
+    await fillField("phone");
+    await fillField("linkedin");
+    el.btn.classList.remove("busy");
+    el.btn.textContent = "Fill standard fields";
+    el.chips.style.display = "flex";
+    el.nFilled.textContent = "5";
+    el.nSkipped.textContent = "0";
+    el.nUnknown.textContent = "1";
+    await sleep(500);
+
+    // Step 3: AI draft
+    setStep(2, "active");
+    el.btn2.classList.add("busy");
+    el.btn2.style.background = "var(--brand)";
+    el.btn2.style.color = "#fff";
+    el.btn2.style.borderColor = "var(--brand)";
+    el.btn2.textContent = "AI working…";
+    await sleep(650);
+    await typeEssay();
+    el.btn2.classList.remove("busy");
+    el.btn2.style.background = "";
+    el.btn2.style.color = "";
+    el.btn2.style.borderColor = "";
+    el.btn2.textContent = "Fill custom answers (AI)";
+    el.nFilled.textContent = "6";
+    el.nUnknown.textContent = "0";
+
+    // Step 4: done
+    setStep(3, "done");
+    el.steps[3].classList.add("done");
+    await sleep(3200);
+  }
+
+  async function loop() {
+    if (reduce) {
+      // Fill once, no loop.
+      ["first","last","email","phone","linkedin"].forEach(k => { el[k].textContent = data[k]; el[k].classList.add("filled"); });
+      el.essay.textContent = data.essay;
+      el.chips.style.display = "flex";
+      el.nFilled.textContent = "6";
+      el.steps.forEach((s, i) => { if (i < 3) s.classList.add("done"); else s.classList.add("done"); });
+      return;
+    }
+    while (true) {
+      await runOnce();
+    }
+  }
+
+  // Start when theater scrolls into view
+  const stage = document.getElementById("pp-stage");
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        io.disconnect();
+        loop();
+      }
+    });
+  }, { threshold: 0.25 });
+  io.observe(stage);
+})();
+</script>
 {% endblock %}
